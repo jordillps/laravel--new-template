@@ -20,10 +20,35 @@ DEFINIR MODEL USER
 
 Nous atributs al model USER
 
+Usuari Creat (DatabaseSeeder)
+Jordi Llobet
+jordillps@gmail.com
+12345678
+
 php asrtisan migrate:fresh --seed
 
 
 ----------------------------------------------------------------------------------
 
+INSTALACIO FILAMENT 4
+
+composer require filament/filament:"^4.0"
+
+php artisan filament:install --panels
+
+admin
+
+Al Model Usuari:
+
+use Filament\Panel;
+
+implements FilamentUser
+
+//Poden acceder al panell complet de Filament  todos los usuarios  
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
 
 
+-------------------------------------------------------------------------------------------
