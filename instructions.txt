@@ -1,0 +1,29 @@
+Crea el projecte Laravel
+
+.env
+
+Canviar a mysql. Incloure les dades de la base de dades
+
+Incloure idiomes "es"
+
+composer update (no es necessari)
+
+npm install
+
+php artisan key:generate
+
+php artisan migrate
+
+-------------------------------------------------------------------------------
+
+DEFINIR MODEL USER
+
+Nous atributs al model USER
+
+php asrtisan migrate:fresh --seed
+
+
+----------------------------------------------------------------------------------
+
+
+
