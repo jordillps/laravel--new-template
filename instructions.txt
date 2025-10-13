@@ -52,3 +52,15 @@ implements FilamentUser
 
 
 -------------------------------------------------------------------------------------------
+
+MULTILANGUAGE
+
+php artisan lang:publish
+
+php artisan vendor:publish --tag=filament-panels-translations
+
+Eliminar les idiomes no necessaris
+
+Actualitzar els arxius del català
+
+-----------------------------------------------------------------------------------------
