@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Filament\Panel;
 use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Support\Facades\Storage;
 
 
 class User extends Authenticatable implements FilamentUser
@@ -28,7 +29,7 @@ class User extends Authenticatable implements FilamentUser
         'phone',
         'address',
         'city',
-        'state',
+        'province',
         'country',
         'postal_code',
         'avatar',
@@ -63,4 +64,29 @@ class User extends Authenticatable implements FilamentUser
         return true;
     }
 
+    /**
+     * Boot del modelo para eventos
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Cuando se actualiza un usuario
+        static::updating(function ($user) {
+            // Si el avatar ha cambiado y había un avatar anterior
+            if ($user->isDirty('avatar') && $user->getOriginal('avatar')) {
+                $oldAvatar = $user->getOriginal('avatar');
+                if (Storage::disk('avatars')->exists($oldAvatar)) {
+                    Storage::disk('avatars')->delete($oldAvatar);
+                }
+            }
+        });
+
+        // Cuando se elimina un usuario
+        static::deleting(function ($user) {
+            if ($user->avatar && Storage::disk('avatars')->exists($user->avatar)) {
+                Storage::disk('avatars')->delete($user->avatar);
+            }
+        });
+    }
 }

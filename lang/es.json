@@ -1,0 +1,26 @@
+{
+    "name": "Nombre",
+    "price": "Precio",
+    "active": "Está activo",
+    "status": "Estado",
+    "created_at": "Creado el",
+    "updated_at": "Actualizado el",
+    "category": "Categoría",
+    "actions": "Acciones",
+    "tags": "Etiquetas",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "Detalles del Pedido": "Detalles del Pedido",
+    "Notas Adicionales": "Notas Adicionales",
+    "email verified at": "Correo verificado el",
+    "phone": "Teléfono",
+    "role": "Rol",
+    "address": "Dirección",
+    "city": "Ciudad",
+    "province": "Provincia",
+    "country": "País",
+    "postal code": "Código postal",
+    "avatar": "Avatar",
+    "email_verified_at": "Correo verificado el"
+
+}

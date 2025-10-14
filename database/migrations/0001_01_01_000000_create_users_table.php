@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('address')->nullable();
             //City
             $table->string('city')->nullable();
-            //State
-            $table->string('state')->nullable();
+            //Province
+            $table->string('province')->nullable();
             //Country
             $table->string('country')->nullable();
             //Postal Code

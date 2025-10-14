@@ -38,6 +38,20 @@ return [
             'report' => false,
         ],
 
+        'media' => [
+            'driver' => 'local',
+            'root' => public_path('media'),
+            'url' => env('APP_URL').'/media',
+            'visibility' => 'public',
+        ],
+
+        'avatars' => [
+            'driver' => 'local',
+            'root' => public_path('media/avatars'),
+            'url' => env('APP_URL').'/media/avatars',
+            'visibility' => 'public',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

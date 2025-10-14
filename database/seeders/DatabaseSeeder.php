@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             'phone' => '666666666',
             'address' => 'Carrer de la Marina, 123',
             'city' => 'Barcelona',
-            'state' => 'Catalunya',
+            'province' => 'Barcelona',
             'country' => 'España',
             'postal_code' => '08005',
             'avatar' => 'https://i.pravatar.cc/300',

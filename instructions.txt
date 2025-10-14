@@ -64,3 +64,20 @@ Eliminar les idiomes no necessaris
 Actualitzar els arxius del català
 
 -----------------------------------------------------------------------------------------
+
+CREAR EL RECURS USER
+
+php artisan make:filament-resource User --generate
+
+--generate: gerenar les columns des de la base de dades (normalment ho pregunta i posem yes)
+
+Afegir strings a UserResource
+
+Afegir traduccions
+
+Modificar camps a UsersTable, UserForm, UserInfoList
+
+Recorda: .env http://127.0.0.1:8000 per visualitzar les imatges
+
+-------------------------------------------------------------------------------------------
+
