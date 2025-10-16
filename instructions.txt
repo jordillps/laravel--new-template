@@ -81,3 +81,19 @@ Recorda: .env http://127.0.0.1:8000 per visualitzar les imatges
 
 -------------------------------------------------------------------------------------------
 
+Añadir profile, emailverification AdminPanelProvider
+
+->profile()
+->registration()
+->emailVerification()
+
+Configuració mailtrap a .env
+
+Per poder rebre els correus
+
+# QUEUE_CONNECTION=database
+QUEUE_CONNECTION=sync
+
+Al Model  User incloure implements MustVerifyEmail
+
+--------------------------------------------------------------------------------

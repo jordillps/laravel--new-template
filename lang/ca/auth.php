@@ -1,0 +1,21 @@
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used during authentication for various
+    | messages that we need to display to the user. You are free to modify
+    | these language lines according to your application's requirements.
+    |
+    */
+
+    //translate to Catalan
+    'failed' => 'Aquestes credencials no coincideixen amb els nostres registres.',
+    'password' => 'La contrasenya proporcionada és incorrecta.',
+    'throttle' => 'Masses intents d\'inici de sessió. Si us plau, torna a provar-ho en :seconds segons.',
+
+];

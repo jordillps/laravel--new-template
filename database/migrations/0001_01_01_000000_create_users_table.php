@@ -17,7 +17,7 @@ return new class extends Migration
             //role
             $table->string('role')->default('usuario'); // usuario, admininstrador
             //phone number
-            $table->string('phone')->unique();
+            $table->string('phone')->unique()->nullable();
             //Address
             $table->string('address')->nullable();
             //City
