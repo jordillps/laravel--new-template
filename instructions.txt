@@ -97,3 +97,270 @@ QUEUE_CONNECTION=sync
 Al Model  User incloure implements MustVerifyEmail
 
 --------------------------------------------------------------------------------
+
+IMPLEMENTACIÓN EMAIL VERIFICACIÓN EN ESPAÑOL - PASOS DEFINITIVOS
+
+1. CONFIGURAR APPSERVICEPROVIDER PARA EMAILS EN ESPAÑOL
+
+En app/Providers/AppServiceProvider.php, agregar en el método boot():
+
+```php
+public function boot(): void
+{
+    // Configurar las notificaciones de verificación de email en español
+    \Illuminate\Auth\Notifications\VerifyEmail::toMailUsing(function ($notifiable, $url) {
+        return (new \Illuminate\Notifications\Messages\MailMessage)
+            ->subject('Verifica tu dirección de correo electrónico')
+            ->greeting('¡Hola ' . $notifiable->name . '!')
+            ->line('Gracias por registrarte en ' . config('app.name') . '.')
+            ->line('Por favor, haz clic en el botón de abajo para verificar tu dirección de correo electrónico.')
+            ->action('Verificar dirección de correo', $url)
+            ->line('Este enlace de verificación expirará en ' . config('auth.verification.expire', 60) . ' minutos.')
+            ->line('Si no creaste una cuenta, no es necesario realizar ninguna acción.')
+            ->salutation('Saludos,')
+            ->salutation('El equipo de ' . config('app.name'));
+    });
+}
+```
+
+EXPLICACIÓN: Este método sobrescribe GLOBALMENTE todas las notificaciones VerifyEmail, 
+incluyendo las de Filament, para usar contenido completamente en español.
+
+2. AGREGAR RUTAS DE VERIFICACIÓN
+
+En routes/web.php, agregar:
+
+```php
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+
+// Rutas de verificación de email
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect('/admin');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+```
+
+EXPLICACIÓN: Laravel necesita estas rutas específicas para generar los enlaces de 
+verificación. Sin estas rutas, el sistema no puede crear las URLs firmadas.
+
+3. PUBLICAR PLANTILLAS DE EMAIL (OPCIONAL)
+
+```bash
+php artisan vendor:publish --tag=laravel-mail
+```
+
+EXPLICACIÓN: Esto publica las plantillas de email en resources/views/vendor/mail/ 
+para futuras personalizaciones visuales si se necesitan.
+
+4. COMANDO DE PRUEBA (OPCIONAL)
+
+Crear app/Console/Commands/TestVerifyEmail.php:
+
+```php
+php artisan make:command TestVerifyEmail
+```
+
+Configurar signature: 'test:verify-email {email}'
+Configurar description: 'Prueba el envío de email de verificación en español'
+
+En el método handle():
+- Buscar usuario por email
+- Llamar $user->sendEmailVerificationNotification()
+- Mostrar confirmación
+
+EXPLICACIÓN: Herramienta útil para probar emails sin registrar nuevos usuarios.
+
+5. VERIFICACIONES IMPORTANTES
+
+✅ .env debe tener: APP_LOCALE=es
+✅ Model User debe implementar: MustVerifyEmail
+✅ AdminPanelProvider debe tener: ->emailVerification()
+✅ Configuración de mail debe funcionar (Mailtrap, etc.)
+
+6. RESULTADO FINAL
+
+Los emails de verificación ahora incluyen:
+- Subject: "Verifica tu dirección de correo electrónico"
+- Saludo personalizado: "¡Hola [Nombre]!"
+- Contenido completamente en español
+- Botón: "Verificar dirección de correo"
+- Información de expiración
+- Firma profesional
+
+IMPORTANTE: La solución usa AppServiceProvider para configuración GLOBAL, 
+no necesita clases de notificación personalizadas ni métodos adicionales en User.php.
+
+Comando de prueba: php artisan test:verify-email {email}
+
+--------------------------------------------------------------------------------
+
+IMPLEMENTACIÓN EMAIL RESTABLECIMIENTO DE CONTRASEÑA EN ESPAÑOL - CONFIGURACIÓN FINAL
+
+1. CONFIGURACIÓN EN APPSERVICEPROVIDER
+
+En app/Providers/AppServiceProvider.php, agregar en el método boot():
+
+```php
+// Configurar las notificaciones de restablecimiento de contraseña en español
+\Illuminate\Auth\Notifications\ResetPassword::toMailUsing(function ($notifiable, $token) {
+    // Usar rutas personalizadas que evitan el error 403
+    $url = url(route('custom.password.reset', ['token' => $token]) . '?email=' . urlencode($notifiable->email));
+
+    return (new \Illuminate\Notifications\Messages\MailMessage)
+        ->subject('Restablecer contraseña')
+        ->greeting('¡Hola ' . $notifiable->name . '!')
+        ->line('Has recibido este correo porque hemos recibido una solicitud de restablecimiento de contraseña para tu cuenta.')
+        ->action('Restablecer contraseña', $url)
+        ->line('Este enlace de restablecimiento de contraseña expirará en ' . config('auth.passwords.'.config('auth.defaults.passwords').'.expire', 60) . ' minutos.')
+        ->line('Si no solicitaste el restablecimiento de contraseña, no es necesario realizar ninguna acción.')
+        ->salutation('Saludos,')
+        ->salutation('El equipo de ' . config('app.name'));
+});
+```
+
+2. RUTAS NECESARIAS
+
+En routes/web.php (rutas esenciales para verificación y password reset):
+
+```php
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
+
+// Rutas de verificación de email
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect('/admin');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+// Rutas personalizadas de password reset (para evitar error 403)
+Route::get('/custom-password/reset/{token}', function (Request $request, $token) {
+    $email = $request->query('email');
+    if (!$email) {
+        return response('Email parameter missing', 400);
+    }
+    return view('password-reset-form', compact('token', 'email'));
+})->name('custom.password.reset');
+
+Route::post('/custom-password/reset', function (Request $request) {
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|confirmed|min:8',
+    ]);
+
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($user, $password) {
+            $user->forceFill(['password' => bcrypt($password)])->save();
+        }
+    );
+
+    return $status === Password::PASSWORD_RESET
+        ? redirect('/admin')->with('status', __($status))
+        : back()->withErrors(['email' => [__($status)]]);
+})->name('custom.password.update');
+```
+
+3. CREAR VISTA PERSONALIZADA DE RESET
+
+Crear resources/views/password-reset-form.blade.php con:
+- Diseño idéntico a los formularios de Filament
+- Tipografía Inter (Google Fonts)
+- Paleta de colores de Filament (primary/danger)
+- Componentes responsive con Tailwind CSS
+- Validación en tiempo real con JavaScript
+- Estados de error integrados al estilo Filament
+- Iconos SVG consistentes con la interfaz
+- Transiciones y efectos hover
+
+4. COMANDO DE PRUEBA (OPCIONAL)
+
+Crear app/Console/Commands/TestPasswordReset.php para probar emails.
+
+5. RESULTADO FINAL
+
+✅ Emails completamente en español
+✅ Sin errores 403 "Invalid signature"
+✅ Enlace "Forgot password" funciona en Filament
+✅ Sistema de verificación de email también en español
+✅ Compatible con Filament y formularios personalizados
+
+Comando de prueba: php artisan test:password-reset {email}
+
+--------------------------------------------------------------------------------
+
+IMPLEMENTACIÓN AUTO-ELIMINACIÓN DE AVATARES - CONFIGURACIÓN FINAL
+
+1. CONFIGURACIÓN DEL DISCO DE AVATARES
+
+En config/filesystems.php, agregar disco personalizado:
+
+```php
+'avatars' => [
+    'driver' => 'local',
+    'root' => public_path('media/avatars'),
+    'url' => env('APP_URL').'/media/avatars',
+    'visibility' => 'public',
+],
+```
+
+2. EVENTOS EN MODEL USER
+
+En app/Models/User.php, agregar método boot() para eventos:
+
+```php
+/**
+ * Boot del modelo para eventos
+ */
+protected static function boot()
+{
+    parent::boot();
+
+    // Cuando se actualiza un usuario
+    static::updating(function ($user) {
+        // Si el avatar ha cambiado y había un avatar anterior
+        if ($user->isDirty('avatar') && $user->getOriginal('avatar')) {
+            $oldAvatar = $user->getOriginal('avatar');
+            if (Storage::disk('avatars')->exists($oldAvatar)) {
+                Storage::disk('avatars')->delete($oldAvatar);
+            }
+        }
+    });
+
+    // Cuando se elimina un usuario
+    static::deleting(function ($user) {
+        if ($user->avatar && Storage::disk('avatars')->exists($user->avatar)) {
+            Storage::disk('avatars')->delete($user->avatar);
+        }
+    });
+}
+```
+
+Importante: Agregar use Illuminate\Support\Facades\Storage; al inicio del archivo.
+
+3. RESULTADO FINAL
+
+✅ Auto-eliminación cuando se actualiza avatar
+✅ Auto-eliminación cuando se elimina usuario
+✅ Verificación de existencia antes de eliminar
+✅ Compatible con Filament FileUpload
+✅ No requiere configuración adicional en formularios
+
+
+
+
+
+
+
