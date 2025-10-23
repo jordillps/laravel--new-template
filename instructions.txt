@@ -98,183 +98,206 @@ Al Model  User incloure implements MustVerifyEmail
 
 --------------------------------------------------------------------------------
 
-IMPLEMENTACIÓN EMAIL VERIFICACIÓN MULTIIDIOMA - CONFIGURACIÓN FINAL
+IMPLEMENTACIÓN EMAIL VERIFICACIÓN EN ESPAÑOL - PASOS DEFINITIVOS
 
-1. CREAR TRADUCCIONES EN ARCHIVOS DE IDIOMA
+1. CONFIGURAR APPSERVICEPROVIDER PARA EMAILS EN ESPAÑOL
 
-En lang/es.json y lang/en.json, agregar las traducciones:
-
-```json
-{
-    "Verify your email address": "Verifica tu dirección de correo electrónico",
-    "Hello :name!": "¡Hola :name!",
-    "Thanks for registering with :app_name.": "Gracias por registrarte en :app_name.",
-    "Please click the button below to verify your email address.": "Por favor, haz clic en el botón de abajo para verificar tu dirección de correo electrónico.",
-    "Verify Email Address": "Verificar dirección de correo",
-    "This verification link will expire in :expire minutes.": "Este enlace de verificación expirará en :expire minutos.",
-    "If you did not create an account, no further action is required.": "Si no creaste una cuenta, no es necesario realizar ninguna acción.",
-    "Regards": "Saludos",
-    "The :app_name Team": "El equipo de :app_name"
-}
-```
-
-2. CREAR CLASE PERSONALIZADA MULTIIDIOMA
-
-Crear app/Notifications/VerifyEmail.php:
+En app/Providers/AppServiceProvider.php, agregar en el método boot():
 
 ```php
-<?php
-
-namespace App\Notifications;
-
-use Illuminate\Auth\Notifications\VerifyEmail as BaseVerifyEmail;
-use Illuminate\Notifications\Messages\MailMessage;
-
-class VerifyEmail extends BaseVerifyEmail
+public function boot(): void
 {
-    public function toMail($notifiable)
-    {
-        $verificationUrl = $this->verificationUrl($notifiable);
-
-        return (new MailMessage)
-            ->subject(__('Verify your email address'))
-            ->greeting(__('Hello :name!', ['name' => $notifiable->name]))
-            ->line(__('Thanks for registering with :app_name.', ['app_name' => config('app.name')]))
-            ->line(__('Please click the button below to verify your email address.'))
-            ->action(__('Verify Email Address'), $verificationUrl)
-            ->line(__('This verification link will expire in :expire minutes.', [
-                'expire' => config('auth.verification.expire', 60)
-            ]))
-            ->line(__('If you did not create an account, no further action is required.'))
-            ->salutation(__('Regards') . ',')
-            ->salutation(__('The :app_name Team', ['app_name' => config('app.name')]));
-    }
+    // Configurar las notificaciones de verificación de email en español
+    \Illuminate\Auth\Notifications\VerifyEmail::toMailUsing(function ($notifiable, $url) {
+        return (new \Illuminate\Notifications\Messages\MailMessage)
+            ->subject('Verifica tu dirección de correo electrónico')
+            ->greeting('¡Hola ' . $notifiable->name . '!')
+            ->line('Gracias por registrarte en ' . config('app.name') . '.')
+            ->line('Por favor, haz clic en el botón de abajo para verificar tu dirección de correo electrónico.')
+            ->action('Verificar dirección de correo', $url)
+            ->line('Este enlace de verificación expirará en ' . config('auth.verification.expire', 60) . ' minutos.')
+            ->line('Si no creaste una cuenta, no es necesario realizar ninguna acción.')
+            ->salutation('Saludos,')
+            ->salutation('El equipo de ' . config('app.name'));
+    });
 }
 ```
 
-3. CONFIGURAR MODEL USER
+EXPLICACIÓN: Este método sobrescribe GLOBALMENTE todas las notificaciones VerifyEmail, 
+incluyendo las de Filament, para usar contenido completamente en español.
 
-En app/Models/User.php:
+2. AGREGAR RUTAS DE VERIFICACIÓN
+
+En routes/web.php, agregar:
 
 ```php
-use App\Notifications\VerifyEmail as VerifyEmailNotification;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
-public function sendEmailVerificationNotification()
-{
-    $this->notify(new VerifyEmailNotification);
-}
+// Rutas de verificación de email
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect('/admin');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 ```
 
-4. COMANDOS DE PRUEBA DISPONIBLES
+EXPLICACIÓN: Laravel necesita estas rutas específicas para generar los enlaces de 
+verificación. Sin estas rutas, el sistema no puede crear las URLs firmadas.
+
+3. PUBLICAR PLANTILLAS DE EMAIL (OPCIONAL)
 
 ```bash
-php artisan test:verify-email-notification {email}           # Clase personalizada
-php artisan test:multilang-verify-email {email} --locale=es  # Probar en español
-php artisan test:multilang-verify-email {email} --locale=en  # Probar en inglés
+php artisan vendor:publish --tag=laravel-mail
 ```
 
-5. CONFIGURACIÓN FINAL
+EXPLICACIÓN: Esto publica las plantillas de email en resources/views/vendor/mail/ 
+para futuras personalizaciones visuales si se necesitan.
 
-✅ AppServiceProvider.php - Solo contiene configuración de ResetPassword
-✅ Clase VerifyEmail personalizada maneja completamente la verificación
-✅ No hay configuraciones duplicadas o conflictos
-✅ Sistema completamente desacoplado y mantenible
+4. COMANDO DE PRUEBA (OPCIONAL)
 
-6. VENTAJAS DE LA IMPLEMENTACIÓN MULTIIDIOMA
-
-✅ Soporte para múltiples idiomas automático
-✅ Usa el sistema de traducciones de Laravel
-✅ Fácil agregar nuevos idiomas (solo crear archivos .json)
-✅ Se adapta al locale configurado en APP_LOCALE
-✅ Código mantenible y escalable
-✅ Compatible con todas las funciones de localización de Laravel
-
---------------------------------------------------------------------------------
-
-IMPLEMENTACIÓN EMAIL RESTABLECIMIENTO DE CONTRASEÑA MULTIIDIOMA - CONFIGURACIÓN FINAL
-
-1. CREAR TRADUCCIONES EN ARCHIVOS DE IDIOMA
-
-En lang/es.json y lang/en.json, agregar las traducciones para reset password:
-
-```json
-{
-    "Reset Password": "Restablecer contraseña",
-    "You are receiving this email because we received a password reset request for your account.": "Has recibido este correo porque hemos recibido una solicitud de restablecimiento de contraseña para tu cuenta.",
-    "Reset Password Button": "Restablecer contraseña",
-    "This password reset link will expire in :expire minutes.": "Este enlace de restablecimiento de contraseña expirará en :expire minutos.",
-    "If you did not request a password reset, no further action is required.": "Si no solicitaste el restablecimiento de contraseña, no es necesario realizar ninguna acción."
-}
-```
-
-2. CREAR CLASE PERSONALIZADA MULTIIDIOMA
-
-Crear app/Notifications/ResetPassword.php:
+Crear app/Console/Commands/TestVerifyEmail.php:
 
 ```php
-<?php
-
-namespace App\Notifications;
-
-use Illuminate\Auth\Notifications\ResetPassword as BaseResetPassword;
-use Illuminate\Notifications\Messages\MailMessage;
-
-class ResetPassword extends BaseResetPassword
-{
-    public function toMail($notifiable)
-    {
-        $url = url(route('custom.password.reset', ['token' => $this->token]) . '?email=' . urlencode($notifiable->email));
-
-        return (new MailMessage)
-            ->subject(__('Reset Password'))
-            ->greeting(__('Hello :name!', ['name' => $notifiable->name]))
-            ->line(__('You are receiving this email because we received a password reset request for your account.'))
-            ->action(__('Reset Password Button'), $url)
-            ->line(__('This password reset link will expire in :expire minutes.', [
-                'expire' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire', 60)
-            ]))
-            ->line(__('If you did not request a password reset, no further action is required.'))
-            ->salutation(__('Regards') . ',')
-            ->salutation(__('The :app_name Team', ['app_name' => config('app.name')]));
-    }
-}
+php artisan make:command TestVerifyEmail
 ```
 
-3. CONFIGURAR MODEL USER
+Configurar signature: 'test:verify-email {email}'
+Configurar description: 'Prueba el envío de email de verificación en español'
 
-En app/Models/User.php:
+En el método handle():
+- Buscar usuario por email
+- Llamar $user->sendEmailVerificationNotification()
+- Mostrar confirmación
 
-```php
-use App\Notifications\ResetPassword as ResetPasswordNotification;
+EXPLICACIÓN: Herramienta útil para probar emails sin registrar nuevos usuarios.
 
-public function sendPasswordResetNotification($token)
-{
-    $this->notify(new ResetPasswordNotification($token));
-}
-```
+5. VERIFICACIONES IMPORTANTES
 
-4. COMANDOS DE PRUEBA DISPONIBLES
-
-```bash
-php artisan test:password-reset {email}                        # Comando original
-php artisan test:multilang-reset-password {email} --locale=es  # Probar en español
-php artisan test:multilang-reset-password {email} --locale=en  # Probar en inglés
-```
-
-5. CONFIGURACIÓN FINAL
-
-✅ AppServiceProvider.php - Completamente limpio (método boot() vacío)
-✅ Ambas notificaciones (VerifyEmail y ResetPassword) usan clases personalizadas
-✅ Sistema completamente multiidioma y desacoplado
-✅ Rutas personalizadas funcionando sin conflictos 403
+✅ .env debe tener: APP_LOCALE=es
+✅ Model User debe implementar: MustVerifyEmail
+✅ AdminPanelProvider debe tener: ->emailVerification()
+✅ Configuración de mail debe funcionar (Mailtrap, etc.)
 
 6. RESULTADO FINAL
 
-✅ Sistema completamente multiidioma para ambas notificaciones
-✅ Traducciones centralizadas en archivos .json
-✅ Arquitectura limpia sin configuraciones globales
-✅ Fácil mantenimiento y escalabilidad
-✅ Compatible con cualquier nuevo idioma agregando archivos .json
+Los emails de verificación ahora incluyen:
+- Subject: "Verifica tu dirección de correo electrónico"
+- Saludo personalizado: "¡Hola [Nombre]!"
+- Contenido completamente en español
+- Botón: "Verificar dirección de correo"
+- Información de expiración
+- Firma profesional
+
+IMPORTANTE: La solución usa AppServiceProvider para configuración GLOBAL, 
+no necesita clases de notificación personalizadas ni métodos adicionales en User.php.
+
+Comando de prueba: php artisan test:verify-email {email}
+
+--------------------------------------------------------------------------------
+
+IMPLEMENTACIÓN EMAIL RESTABLECIMIENTO DE CONTRASEÑA EN ESPAÑOL - CONFIGURACIÓN FINAL
+
+1. CONFIGURACIÓN EN APPSERVICEPROVIDER
+
+En app/Providers/AppServiceProvider.php, agregar en el método boot():
+
+```php
+// Configurar las notificaciones de restablecimiento de contraseña en español
+\Illuminate\Auth\Notifications\ResetPassword::toMailUsing(function ($notifiable, $token) {
+    // Usar rutas personalizadas que evitan el error 403
+    $url = url(route('custom.password.reset', ['token' => $token]) . '?email=' . urlencode($notifiable->email));
+
+    return (new \Illuminate\Notifications\Messages\MailMessage)
+        ->subject('Restablecer contraseña')
+        ->greeting('¡Hola ' . $notifiable->name . '!')
+        ->line('Has recibido este correo porque hemos recibido una solicitud de restablecimiento de contraseña para tu cuenta.')
+        ->action('Restablecer contraseña', $url)
+        ->line('Este enlace de restablecimiento de contraseña expirará en ' . config('auth.passwords.'.config('auth.defaults.passwords').'.expire', 60) . ' minutos.')
+        ->line('Si no solicitaste el restablecimiento de contraseña, no es necesario realizar ninguna acción.')
+        ->salutation('Saludos,')
+        ->salutation('El equipo de ' . config('app.name'));
+});
+```
+
+2. RUTAS NECESARIAS
+
+En routes/web.php (rutas esenciales para verificación y password reset):
+
+```php
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
+
+// Rutas de verificación de email
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect('/admin');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+// Rutas personalizadas de password reset (para evitar error 403)
+Route::get('/custom-password/reset/{token}', function (Request $request, $token) {
+    $email = $request->query('email');
+    if (!$email) {
+        return response('Email parameter missing', 400);
+    }
+    return view('password-reset-form', compact('token', 'email'));
+})->name('custom.password.reset');
+
+Route::post('/custom-password/reset', function (Request $request) {
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|confirmed|min:8',
+    ]);
+
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($user, $password) {
+            $user->forceFill(['password' => bcrypt($password)])->save();
+        }
+    );
+
+    return $status === Password::PASSWORD_RESET
+        ? redirect('/admin')->with('status', __($status))
+        : back()->withErrors(['email' => [__($status)]]);
+})->name('custom.password.update');
+```
+
+3. CREAR VISTA PERSONALIZADA DE RESET
+
+Crear resources/views/password-reset-form.blade.php con:
+- Diseño idéntico a los formularios de Filament
+- Tipografía Inter (Google Fonts)
+- Paleta de colores de Filament (primary/danger)
+- Componentes responsive con Tailwind CSS
+- Validación en tiempo real con JavaScript
+- Estados de error integrados al estilo Filament
+- Iconos SVG consistentes con la interfaz
+- Transiciones y efectos hover
+
+4. COMANDO DE PRUEBA (OPCIONAL)
+
+Crear app/Console/Commands/TestPasswordReset.php para probar emails.
+
+5. RESULTADO FINAL
+
+✅ Emails completamente en español
+✅ Sin errores 403 "Invalid signature"
+✅ Enlace "Forgot password" funciona en Filament
+✅ Sistema de verificación de email también en español
+✅ Compatible con Filament y formularios personalizados
+
+Comando de prueba: php artisan test:password-reset {email}
 
 --------------------------------------------------------------------------------
 

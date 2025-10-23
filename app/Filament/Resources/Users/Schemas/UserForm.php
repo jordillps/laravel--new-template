@@ -44,8 +44,7 @@ class UserForm
                     ->avatar()
                     ->image(),
                 DateTimePicker::make('email_verified_at')
-                    ->label(__('email verified at'))
-                    ->disabled(),
+                    ->label(__('email verified at')),
             ]);
     }
 }
