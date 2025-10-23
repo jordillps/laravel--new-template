@@ -10,6 +10,8 @@ use Filament\Panel;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\VerifyEmail as VerifyEmailNotification;
+use App\Notifications\ResetPassword as ResetPasswordNotification;
 
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
@@ -63,6 +65,28 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
+    }
+
+    /**
+     * Send the email verification notification.
+     * (Opcional - la configuración global en AppServiceProvider también funciona)
+     *
+     * @return void
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmailNotification);
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 
     /**
