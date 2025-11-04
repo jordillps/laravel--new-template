@@ -36,5 +36,16 @@
     "You are receiving this email because we received a password reset request for your account.": "You are receiving this email because we received a password reset request for your account.",
     "Reset Password Button": "Reset Password",
     "This password reset link will expire in :expire minutes.": "This password reset link will expire in :expire minutes.",
-    "If you did not request a password reset, no further action is required.": "If you did not request a password reset, no further action is required."
+    "If you did not request a password reset, no further action is required.": "If you did not request a password reset, no further action is required.",
+    "Cambio de contraseña": "Password change",
+    "Profile": "Profile (Password change)",
+    "Two Factor Authentication": "Two Factor Authentication",
+    "Email Authentication": "Email Authentication",
+    "Enable email authentication": "Enable email authentication",
+    "Disable email authentication": "Disable email authentication",
+    "Email authentication is enabled": "Email authentication is enabled",
+    "Email authentication is disabled": "Email authentication is disabled",
+    "Authentication Code": "Authentication Code",
+    "Please check your email for the authentication code": "Please check your email for the authentication code",
+    "Enter the authentication code": "Enter the authentication code"
 }

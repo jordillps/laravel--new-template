@@ -38,5 +38,16 @@
     "You are receiving this email because we received a password reset request for your account.": "Has recibido este correo porque hemos recibido una solicitud de restablecimiento de contraseña para tu cuenta.",
     "Reset Password Button": "Restablecer contraseña",
     "This password reset link will expire in :expire minutes.": "Este enlace de restablecimiento de contraseña expirará en :expire minutos.",
-    "If you did not request a password reset, no further action is required.": "Si no solicitaste el restablecimiento de contraseña, no es necesario realizar ninguna acción."
+    "If you did not request a password reset, no further action is required.": "Si no solicitaste el restablecimiento de contraseña, no es necesario realizar ninguna acción.",
+    "Cambio de contraseña": "Cambio de contraseña",
+    "Profile": "Perfil (Cambio de contraseña)",
+    "Two Factor Authentication": "Autenticación de Doble Factor",
+    "Email Authentication": "Autenticación por Email",
+    "Enable email authentication": "Habilitar autenticación por email",
+    "Disable email authentication": "Deshabilitar autenticación por email",
+    "Email authentication is enabled": "La autenticación por email está habilitada",
+    "Email authentication is disabled": "La autenticación por email está deshabilitada",
+    "Authentication Code": "Código de Autenticación",
+    "Please check your email for the authentication code": "Por favor revisa tu email para obtener el código de autenticación",
+    "Enter the authentication code": "Ingresa el código de autenticación"
 }

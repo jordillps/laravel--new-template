@@ -10,9 +10,10 @@ use Filament\Panel;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
 
 
-class User extends Authenticatable implements FilamentUser, MustVerifyEmail
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasEmailAuthentication
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -34,6 +35,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         'country',
         'postal_code',
         'avatar',
+        'has_email_authentication',
     ];
 
     /**
@@ -56,6 +58,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'has_email_authentication' => 'boolean',
         ];
     }
 
@@ -89,5 +92,20 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
                 Storage::disk('avatars')->delete($user->avatar);
             }
         });
+    }
+
+    //Email Authentication Methods
+    public function hasEmailAuthentication(): bool
+    {
+        // This method should return true if the user has enabled email authentication.
+        
+        return $this->has_email_authentication;
+    }
+
+    public function toggleEmailAuthentication(bool $condition): void
+    {
+        // This method should save whether or not the user has enabled email authentication.
+        $this->has_email_authentication = $condition;
+        $this->save();
     }
 }
