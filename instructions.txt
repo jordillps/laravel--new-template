@@ -96,4 +96,124 @@ QUEUE_CONNECTION=sync
 
 Al Model  User incloure implements MustVerifyEmail
 
---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------
+
+Shield Plugin for Roles and Permissions
+
+composer require bezhansalleh/filament-shield
+
+php artisan vendor:publish --tag="filament-shield-config"
+
+// config/filament-shield.php
+return [
+    // ...
+    'auth_provider_model' => 'App\\Models\\User',
+    // ...
+];
+
+Al Model "User"
+
+use Spatie\Permission\Traits\HasRoles;
+
+Use HasRoles
+
+Afegir a AdminPanelProvider el plugin
+
+php artisan shield:setup
+
+composer update
+
+php artisan vendor:publish --tag="filament-shield-translations"
+
+crear una nova carpeta "ca"
+
+Copiar-hi l'arxiu: filament-shield i fer les traduccions
+
+Cal desabilitar el Multitenancy de AdminPanelProvider
+
+Directament podem afegir el camp "Role" al recurs User - UserForm
+
+Crear un usuari super-admin
+
+php artisan shield:super-admin --user=2
+
+-----------------------------------------------------------------------
+
+🛡️ GUÍA DE RESET DE LA APLICACIÓN LARAVEL + SHIELD
+
+⚠️ Problema Común:
+Cuando ejecutas `php artisan migrate:fresh --seed`, los permisos de Filament Shield se pierden y necesitan ser regenerados manualmente.
+
+✅ SOLUCIONES DISPONIBLES:
+
+🚀 Opción 1: Comando Automático (RECOMENDADO)
+Usa el comando personalizado que hace todo automáticamente:
+
+php artisan app:reset --force
+
+Este comando ejecuta en orden:
+1. migrate:fresh --seed
+2. shield:generate --all (con confirmaciones automáticas)
+3. role:assign-all-permissions super_admin
+4. Limpia todas las caches
+
+🔧 Opción 2: Pasos Manuales
+Si prefieres hacerlo paso a paso:
+
+# 1. Reset de base de datos
+php artisan migrate:fresh --seed
+
+# 2. Generar permisos de Shield (responder: 0, enter, 0)
+php artisan shield:generate --all
+
+# 3. Asignar permisos al super_admin
+php artisan role:assign-all-permissions super_admin
+
+# 4. Limpiar caches
+php artisan config:clear && php artisan cache:clear
+
+📋 Respuestas para shield:generate --all:
+Cuando ejecutes `shield:generate --all`, responde:
+- Panel: 0 (admin)
+- Generate both: enter (yes - default)
+- What to generate: 0 (policies_and_permissions)
+
+👥 USUARIOS DE PRUEBA:
+Después del reset, tendrás estos usuarios disponibles:
+
+| Email                    | Password      | Rol        | Permisos                |
+|--------------------------|---------------|------------|-------------------------|
+| jordillps@gmail.com      | Password123!  | super_admin| Todos                   |
+| user@example.com         | Password123!  | Usuario    | Solo su perfil          |
+| viewer@example.com       | Password123!  | Viewer     | Ver todos los usuarios  |
+| editor@example.com       | Password123!  | Editor     | Ver y editar usuarios   |
+
+🎯 VERIFICAR QUE TODO FUNCIONA:
+
+# Verificar usuarios y roles
+php artisan user:list-roles
+
+# Verificar configuración de Shield
+php artisan shield:check
+
+# Verificar permisos
+php artisan permission:list
+
+🌐 ACCESO AL PANEL:
+- URL: http://127.0.0.1:8001/admin
+- Usuario: jordillps@gmail.com
+- Password: Password123!
+
+🔍 COMANDOS ÚTILES DISPONIBLES:
+
+php artisan app:reset --force                     # Reset completo automático
+php artisan user:list-roles                       # Ver usuarios y roles
+php artisan shield:check                          # Verificar configuración Shield
+php artisan permission:list                       # Ver todos los permisos
+php artisan role:assign-all-permissions super_admin # Asignar todos los permisos
+php artisan user:assign-super-admin email@example.com # Asignar rol super_admin
+
+-----------------------------------------------------------------------
+
+
+

@@ -6,6 +6,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 
 class UserForm
 {
@@ -23,6 +24,12 @@ class UserForm
                 TextInput::make('email')
                     ->label(__('email'))
                     ->email()
+                    ->required(),
+                Select::make('roles')
+                    ->preload()
+                    ->multiple()
+                    ->label('Rols')                   
+                    ->relationship('roles', 'name')
                     ->required(),
                 TextInput::make('address')
                     ->label(__('address')),

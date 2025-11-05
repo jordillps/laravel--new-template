@@ -11,12 +11,14 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
+use Spatie\Permission\Traits\HasRoles;
 
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasEmailAuthentication
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -61,9 +63,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         ];
     }
 
-    //Poden acceder al panell complet de Filament  todos los usuarios  
+    // Control de acceso al panel de Filament basado en roles y permisos
     public function canAccessPanel(Panel $panel): bool
     {
+        // Permitir acceso al panel (incluyendo login) pero el control real está en los Resources
+        // Los usuarios con rol "Usuario" podrán hacer login pero no verán contenido sin permisos
         return true;
     }
 

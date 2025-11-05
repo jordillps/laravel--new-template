@@ -48,5 +48,7 @@
     "Email authentication is disabled": "La autenticación por email está deshabilitada",
     "Authentication Code": "Código de Autenticación",
     "Please check your email for the authentication code": "Por favor revisa tu email para obtener el código de autenticación",
-    "Enter the authentication code": "Ingresa el código de autenticación"
+    "Enter the authentication code": "Ingresa el código de autenticación",
+    "Mi Perfil": "Mi Perfil",
+    "Roles": "Roles"
 }

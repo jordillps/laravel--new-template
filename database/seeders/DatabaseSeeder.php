@@ -15,17 +15,23 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Jordi Llobet',
-            'email' => 'jordillps@gmail.com',
-            'phone' => '666666666',
-            'address' => 'Carrer de la Marina, 123',
-            'city' => 'Barcelona',
-            'province' => 'Barcelona',
-            'country' => 'España',
-            'postal_code' => '08005',
-            'avatar' => 'https://i.pravatar.cc/300',
-            'password' => bcrypt('12345678'), // password
-        ]);
+        // $superAdmin = User::firstOrCreate([
+        //     'email' => 'jordillps@gmail.com',
+        // ], [
+        //     'name' => 'Jordi Llobet',
+        //     'phone' => '666666666',
+        //     'address' => 'Carrer de la Marina, 123',
+        //     'city' => 'Barcelona',
+        //     'province' => 'Barcelona',
+        //     'country' => 'España',
+        //     'postal_code' => '08005',
+        //     'avatar' => 'https://i.pravatar.cc/300',
+        //     'password' => bcrypt('Password123!'), // password actualizada con nueva política
+        // ]);
+        // $superAdmin->assignRole('super_admin');
+
+
+        // Ejecutar el seeder de roles y permisos
+        $this->call(RolesAndPermissionsSeeder::class);
     }
 }

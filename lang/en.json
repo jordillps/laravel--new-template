@@ -46,5 +46,7 @@
     "Email authentication is disabled": "Email authentication is disabled",
     "Authentication Code": "Authentication Code",
     "Please check your email for the authentication code": "Please check your email for the authentication code",
-    "Enter the authentication code": "Enter the authentication code"
+    "Enter the authentication code": "Enter the authentication code",
+    "Mi Perfil": "My Profile",
+    "Roles": "Roles"
 }

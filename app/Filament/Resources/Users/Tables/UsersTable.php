@@ -30,12 +30,11 @@ class UsersTable
                 TextColumn::make('phone')
                     ->label(__('phone'))
                     ->searchable(),
-                // TextColumn::make('roles.name')
-                //     ->label(__('Roles'))
-                //     ->badge()
-                //     ->separator(', ')
-                //     ->searchable(),
-
+                TextColumn::make('roles.name')
+                    ->label(__('Roles'))
+                    ->badge()
+                    ->separator(', ')
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->label(__('created at'))
                     ->dateTime()
