@@ -27,7 +27,6 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         'name',
         'email',
         'password',
-        'role',
         'phone',
         'address',
         'city',
@@ -107,5 +106,17 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         // This method should save whether or not the user has enabled email authentication.
         $this->has_email_authentication = $condition;
         $this->save();
+    }
+
+    /**
+     * Obtener la URL del avatar para Filament
+     */
+    public function getFilamentAvatarUrl(): ?string
+    {
+        if ($this->avatar && Storage::disk('avatars')->exists($this->avatar)) {
+            return url('media/avatars/' . $this->avatar);
+        }
+        
+        return null;
     }
 }

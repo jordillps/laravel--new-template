@@ -16,10 +16,6 @@ class UserForm
                 TextInput::make('name')
                     ->label(__('name'))
                     ->required(),
-                TextInput::make('role')
-                    ->label(__('role'))
-                    ->required()
-                    ->default('usuario'),
                 TextInput::make('phone')
                     ->label(__('phone'))
                     ->tel()
