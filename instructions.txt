@@ -215,5 +215,93 @@ php artisan user:assign-super-admin email@example.com # Asignar rol super_admin
 
 -----------------------------------------------------------------------
 
+📧 PERSONALIZACIÓN DE EMAILS AUTOMÁTICOS
+
+✅ EMAILS PERSONALIZADOS IMPLEMENTADOS:
+
+🔐 Email de Verificación (CustomVerifyEmail)
+- Sujeto personalizado con emojis
+- Mensaje en español
+- Branding de la aplicación
+- Tiempo de expiración claro
+
+🔑 Email de Reset de Contraseña (CustomResetPassword)  
+- Sujeto personalizado con emojis
+- Mensaje en español
+- Instrucciones claras
+- Advertencias de seguridad
+
+🛡️ Email de Doble Factor (CustomTwoFactorAuth)
+- Código destacado visualmente
+- Tiempo de expiración claro
+- Advertencias de seguridad
+- Branding consistente
+
+🎨 LAYOUT PERSONALIZADO:
+- Header personalizado con tu logo (public/media/logo/logoFormalWeb_8.png)
+- Logo centrado y responsive
+- Título de la aplicación debajo del logo
+- Colores corporativos
+- Plantillas en español
+- Estilos CSS personalizados para mejor presentación
+
+🧪 PROBAR EMAILS:
+
+# Probar email de verificación
+php artisan email:test verify email@example.com
+
+# Probar email de reset de contraseña  
+php artisan email:test reset email@example.com
+
+# Probar email de doble factor
+php artisan email:test 2fa email@example.com
+
+👀 PREVISUALIZAR EMAILS EN NAVEGADOR:
+
+# Generar preview de email de verificación (archivo temporal)
+php artisan email:preview verify
+
+# Generar preview de email de reset (archivo temporal)
+php artisan email:preview reset
+
+# Generar preview de email de 2FA (archivo temporal)  
+php artisan email:preview 2fa
+
+# Mostrar HTML directamente en consola (sin archivo)
+php artisan email:preview verify --console
+
+Los previews se generan en carpeta temporal del sistema y se eliminan automáticamente.
+
+📝 CONFIGURACIÓN:
+- El modelo User automáticamente usa las notificaciones personalizadas
+- Los emails se envían en cola (ShouldQueue) para mejor rendimiento
+- Layout responsive y profesional
+- Textos completamente en español
+
+-----------------------------------------------------------------------
+
+🎨 PALETA DE COLORES Y ESTILOS PERSONALIZADOS
+
+✅ PALETA DE 11 TONOS VERDES:
+- Configurada en AdminPanelProvider
+- Aplicada automáticamente a todos los componentes de Filament
+- Color principal (500): Verde brillante
+- Usado en navegación, enlaces, elementos activos
+
+✅ BOTONES PERSONALIZADOS:
+- Background color: Verde medio-oscuro (700) - rgb(4, 120, 87)
+- Hover effect: Verde oscuro (800) - rgb(6, 95, 70)
+- Aplicado a todos los botones del panel admin
+- CSS personalizado en: resources/css/admin-custom.css
+
+🔧 COMPILACIÓN DE ASSETS:
+# Compilar estilos después de cambios en CSS
+npm run build
+
+# Limpiar cache después de cambios
+php artisan config:clear; php artisan view:clear
+
+-----------------------------------------------------------------------
+
 
 

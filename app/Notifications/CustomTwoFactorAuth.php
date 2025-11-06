@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Notifications;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+
+class CustomTwoFactorAuth extends Notification implements ShouldQueue
+{
+    use Queueable;
+
+    /**
+     * The verification code.
+     */
+    public $code;
+
+    /**
+     * Create a new notification instance.
+     */
+    public function __construct($code)
+    {
+        $this->code = $code;
+    }
+
+    /**
+     * Get the notification's delivery channels.
+     *
+     * @return array<int, string>
+     */
+    public function via(object $notifiable): array
+    {
+        return ['mail'];
+    }
+
+    /**
+     * Get the mail representation of the notification.
+     */
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->subject('🔐 Código de Verificación - Doble Factor')
+            ->greeting('¡Hola!')
+            ->line('Tu código de verificación para acceder a **' . config('app.name') . '** es:')
+            ->line('')
+            ->line("## **{$this->code}**")
+            ->line('')
+            ->line('Este código expirará en **10 minutos**.')
+            ->line('Si no intentaste iniciar sesión, por favor contacta con soporte inmediatamente.')
+            ->line('⚠️ Por tu seguridad, **nunca compartas este código** con nadie.')
+            ->salutation('Saludos,')
+            ->salutation('El equipo de ' . config('app.name'));
+    }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(object $notifiable): array
+    {
+        return [
+            'code' => $this->code,
+            'created_at' => now(),
+        ];
+    }
+}

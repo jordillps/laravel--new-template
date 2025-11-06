@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
 use Spatie\Permission\Traits\HasRoles;
+use App\Notifications\CustomVerifyEmail;
+use App\Notifications\CustomResetPassword;
+use App\Notifications\CustomTwoFactorAuth;
 
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasEmailAuthentication
@@ -122,5 +125,29 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         }
         
         return null;
+    }
+
+    /**
+     * Send the email verification notification.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new CustomVerifyEmail);
+    }
+
+    /**
+     * Send the password reset notification.
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new CustomResetPassword($token));
+    }
+
+    /**
+     * Send the two-factor authentication notification.
+     */
+    public function sendTwoFactorAuthNotification($code): void
+    {
+        $this->notify(new CustomTwoFactorAuth($code));
     }
 }

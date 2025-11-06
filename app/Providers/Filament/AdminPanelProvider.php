@@ -36,8 +36,24 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->multiFactorAuthentication([EmailAuthentication::make()])
             ->colors([
-                'primary' => Color::Indigo,
+                'primary' => [
+                    50 => '236, 253, 245',   // Verde muy claro
+                    100 => '209, 250, 229',  // Verde claro pastel
+                    200 => '167, 243, 208',  // Verde claro
+                    300 => '110, 231, 183',  // Verde suave
+                    400 => '52, 211, 153',   // Verde medio-claro
+                    500 => '16, 185, 129',   // Verde principal
+                    600 => '5, 150, 105',    // Verde medio
+                    700 => '4, 120, 87',     // Verde medio-oscuro
+                    800 => '6, 95, 70',      // Verde oscuro
+                    900 => '6, 78, 59',      // Verde muy oscuro
+                    950 => '2, 44, 34',      // Verde casi negro
+                ],
             ])
+            ->font('Roboto')
+            ->brandLogo(asset('media/logo/logoFormalWeb_8.png'))
+            ->brandLogoHeight('3rem')
+            ->favicon(asset('media/logo/logoformalweb.ico'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->resources([
                 \BezhanSalleh\FilamentShield\Resources\Roles\RoleResource::class,
