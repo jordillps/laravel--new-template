@@ -7,6 +7,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Schemas\Components\Grid;
 
 class UserForm
 {
@@ -14,17 +15,36 @@ class UserForm
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->label(__('name'))
-                    ->required(),
-                TextInput::make('phone')
-                    ->label(__('phone'))
-                    ->tel()
-                    ->required(),
-                TextInput::make('email')
-                    ->label(__('email'))
-                    ->email()
-                    ->required(),
+                //Crear Grid con 3 columnas
+                Grid::make(3)
+                    ->schema([
+                        TextInput::make('name')
+                            ->label(__('name'))
+                            ->required(),
+                        TextInput::make('phone')
+                            ->label(__('phone'))
+                            ->tel()
+                            ->required(),
+                        TextInput::make('email')
+                            ->label(__('email'))
+                            ->email()
+                            ->required(),
+                    ])->columnSpanFull(),
+                TextInput::make('password')
+                    ->label(__('Password'))
+                    ->password()
+                    ->required()
+                    ->minLength(8)
+                    ->confirmed()
+                    ->revealable()
+                    ->helperText(__('password_help'))
+                    ->visible(fn (string $operation): bool => $operation === 'create'),
+                TextInput::make('password_confirmation')
+                    ->label(__('Confirm Password'))
+                    ->password()
+                    ->required()
+                    ->revealable()
+                    ->visible(fn (string $operation): bool => $operation === 'create'),
                 Select::make('roles')
                     ->preload()
                     ->multiple()

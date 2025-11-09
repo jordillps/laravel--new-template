@@ -50,5 +50,8 @@
     "Please check your email for the authentication code": "Por favor revisa tu email para obtener el código de autenticación",
     "Enter the authentication code": "Ingresa el código de autenticación",
     "Mi Perfil": "Mi Perfil",
-    "Roles": "Roles"
+    "Roles": "Roles",
+    "Password": "Contraseña",
+    "Confirm Password": "Confirmar contraseña",
+    "password_help": "Mínimo 8 caracteres, debe incluir mayúscula, minúscula, número y carácter especial"
 }

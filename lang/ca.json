@@ -1,0 +1,17 @@
+{
+    "name": "Nom",
+    "email": "Correu electrònic",
+    "phone": "Telèfon",
+    "password": "Contrasenya",
+    "address": "Adreça",
+    "city": "Ciutat",
+    "province": "Província",
+    "country": "País",
+    "postal code": "Codi postal",
+    "avatar": "Avatar",
+    "email verified at": "Correu verificat el",
+    "Password": "Contrasenya",
+    "Confirm Password": "Confirmar contrasenya",
+    "Roles": "Rols",
+    "password_help": "Mínim 8 caràcters, ha d'incloure majúscula, minúscula, número i caràcter especial"
+}
