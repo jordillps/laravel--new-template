@@ -1,61 +1,186 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Enterprise Template
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive Laravel application template with advanced security features, role-based access control, and corporate branding capabilities.
 
-## About Laravel
+## 🚀 Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 🔐 Advanced Security & Authentication
+- **Multi-Factor Authentication (2FA)** - Two-factor authentication using TOTP
+- **Enhanced Password Security** - Strong password requirements and validation
+- **Account Lockout Protection** - Automatic account lockout after failed login attempts
+- **Session Management** - Secure session handling with proper timeouts
+- **CSRF Protection** - Full Cross-Site Request Forgery protection
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 👥 Role-Based Access Control (RBAC)
+- **Dynamic Role Management** - Create and manage user roles
+- **Permission System** - Granular permission control for resources
+- **User Assignment** - Assign multiple roles and permissions to users
+- **Resource Protection** - Protect application resources based on permissions
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🎨 Admin Panel with Filament
+- **Modern Interface** - Clean and intuitive admin panel using Filament v4
+- **Custom Branding** - Corporate logo and color scheme integration
+- **User Management** - Complete user administration interface
+- **Role & Permission Management** - Visual management of RBAC system
+- **Dashboard Analytics** - User statistics and system overview
 
-## Learning Laravel
+### 📧 Custom Email System
+- **Branded Email Templates** - Corporate-styled email notifications
+- **Multi-language Support** - Spanish and English email templates
+- **Custom Notifications** - Personalized email verification, password reset, and 2FA
+- **Logo Integration** - Company logo in all email communications
+- **Email Testing Tools** - Development commands for email testing and preview
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🎨 Visual Customization
+- **Custom Color Palette** - 11-tone green corporate color scheme
+- **Responsive Design** - Mobile-friendly interface across all components
+- **Brand Integration** - Consistent corporate branding throughout the application
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 📦 Tech Stack
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Framework**: Laravel 12.33.0
+- **Admin Panel**: Filament v4.0
+- **Authentication**: Laravel Fortify
+- **RBAC**: Spatie Laravel Permission + Filament Shield
+- **Frontend**: Vite + Tailwind CSS
+- **Database**: MySQL/PostgreSQL compatible
+- **Testing**: PHPUnit with Feature and Unit tests
 
-## Laravel Sponsors
+## 🛠️ Installation
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd laravel-template
+   ```
 
-### Premium Partners
+2. **Install dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+3. **Environment setup**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-## Contributing
+4. **Database configuration**
+   ```bash
+   # Configure your database in .env file
+   php artisan migrate
+   php artisan db:seed
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+5. **Build assets**
+   ```bash
+   npm run build
+   ```
 
-## Code of Conduct
+6. **Create admin user**
+   ```bash
+   php artisan make:filament-user
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🔧 Configuration
 
-## Security Vulnerabilities
+### Email Configuration
+Configure your email settings in `.env`:
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=your-smtp-host
+MAIL_PORT=587
+MAIL_USERNAME=your-email
+MAIL_PASSWORD=your-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@yourcompany.com
+MAIL_FROM_NAME="Your Company Name"
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 2FA Configuration
+Two-factor authentication is enabled by default. Users can enable it from their profile settings.
 
-## License
+### Logo Configuration
+Place your company logo in `public/media/avatars/logo.png` for email templates.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🧪 Testing
+
+### Email Testing Commands
+```bash
+# Test email functionality
+php artisan email:test user@example.com
+
+# Preview email templates
+php artisan email:preview
+```
+
+### Run Tests
+```bash
+# Run all tests
+php artisan test
+
+# Run specific test suites
+php artisan test --testsuite=Feature
+php artisan test --testsuite=Unit
+```
+
+## 🔒 Security Features
+
+### Account Protection
+- Maximum 5 login attempts before account lockout
+- 15-minute lockout duration
+- Automatic unlock after timeout
+
+### Password Requirements
+- Minimum 8 characters
+- At least one uppercase letter
+- At least one lowercase letter
+- At least one number
+- At least one special character
+
+### Session Security
+- Secure session cookies
+- CSRF token validation
+- Session regeneration on login
+
+## 📱 Admin Panel Access
+
+Access the admin panel at `/admin` with your administrator credentials.
+
+### Default Features
+- User management and role assignment
+- Permission management
+- System dashboard with analytics
+- Profile management with 2FA setup
+
+## 🌍 Localization
+
+The application supports multiple languages:
+- **Spanish** (`es`) - Default language
+- **English** (`en`) - Available for interface and emails
+
+Switch languages through the application settings or modify `config/app.php`.
+
+## 🚀 Development
+
+### Email Development
+Use the provided artisan commands for email development:
+```bash
+php artisan email:preview  # Preview all email templates
+php artisan email:test user@example.com  # Test email delivery
+```
+
+### Custom Commands
+The template includes custom artisan commands for:
+- Email testing and preview
+- User role management
+- Permission synchronization
+
+## 📄 License
+
+This Laravel template is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## 🤝 Support
+
+For support and questions, please refer to the Laravel documentation or create an issue in this repository.
