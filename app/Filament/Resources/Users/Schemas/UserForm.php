@@ -45,7 +45,13 @@ class UserForm
                     ->label(__('avatar'))
                     ->disk('avatars')
                     ->avatar()
-                    ->image(),
+                    ->imageEditor()
+                    ->circleCropper()
+                    ->image()
+                    ->maxSize(2048)
+                    ->acceptedFileTypes(['image/png', 'image/jpg', 'image/jpeg'])
+                    ->directory('')
+                    ->visibility('public'),
                 DateTimePicker::make('email_verified_at')
                     ->label(__('email verified at'))
                     ->disabled(),

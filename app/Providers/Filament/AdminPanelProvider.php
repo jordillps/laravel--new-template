@@ -19,10 +19,20 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use Filament\Panel;
+use Illuminate\Support\Facades\Auth;
+use Filament\Support\Assets\Css;
+use Filament\Support\Facades\FilamentAsset;
+use Filament\Navigation\MenuItem;
+use Illuminate\Support\Facades\View;
 
 
 class AdminPanelProvider extends PanelProvider
 {
+    public function boot(): void
+    {
+        // La configuración de avatares se maneja automáticamente por la interfaz HasAvatar
+    }
+
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -48,6 +58,19 @@ class AdminPanelProvider extends PanelProvider
                     800 => '6, 95, 70',      // Verde oscuro
                     900 => '6, 78, 59',      // Verde muy oscuro
                     950 => '2, 44, 34',      // Verde casi negro
+                ],
+                'blue' => [
+                    50 => '239, 246, 255',   // Azul muy claro
+                    100 => '219, 234, 254',  // Azul claro
+                    200 => '191, 219, 254',  // Azul medio-claro
+                    300 => '147, 197, 253',  // Azul medio
+                    400 => '96, 165, 250',   // Azul
+                    500 => '59, 130, 246',   // Azul principal
+                    600 => '37, 99, 235',    // Azul medio-oscuro
+                    700 => '29, 78, 216',    // Azul oscuro
+                    800 => '30, 64, 175',    // Azul muy oscuro
+                    900 => '30, 58, 138',    // Azul profundo
+                    950 => '23, 37, 84',     // Azul casi negro
                 ],
             ])
             ->font('Roboto')

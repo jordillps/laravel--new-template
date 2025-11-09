@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Filament\Panel;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
@@ -17,7 +18,7 @@ use App\Notifications\CustomResetPassword;
 use App\Notifications\CustomTwoFactorAuth;
 
 
-class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasEmailAuthentication
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasEmailAuthentication, HasAvatar
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -121,10 +122,18 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
     public function getFilamentAvatarUrl(): ?string
     {
         if ($this->avatar && Storage::disk('avatars')->exists($this->avatar)) {
-            return url('media/avatars/' . $this->avatar);
+            return asset('media/avatars/' . $this->avatar);
         }
         
         return null;
+    }
+
+    /**
+     * Obtener el nombre para mostrar en Filament
+     */
+    public function getFilamentName(): string
+    {
+        return $this->name;
     }
 
     /**

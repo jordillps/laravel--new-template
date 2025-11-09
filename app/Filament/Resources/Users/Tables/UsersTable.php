@@ -19,6 +19,7 @@ class UsersTable
                 ImageColumn::make('avatar')
                     ->label(__('avatar'))
                     ->disk('avatars')
+                    ->circular()
                     ->visibility('public'),
                 TextColumn::make('name')
                     ->label(__('name'))
@@ -33,6 +34,9 @@ class UsersTable
                 TextColumn::make('roles.name')
                     ->label(__('Roles'))
                     ->badge()
+                    ->color(function ($state) {
+                        return $state === 'super_admin' ? 'blue' : 'primary';
+                    })
                     ->separator(', ')
                     ->searchable(),
                 TextColumn::make('created_at')

@@ -1,0 +1,23 @@
+/* Custom Avatar Styles for Filament */
+.fi-avatar {
+    position: relative;
+    overflow: hidden;
+}
+
+.fi-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+}
+
+/* Ensure user menu avatar is circular */
+.fi-topbar .fi-avatar {
+    border-radius: 50%;
+}
+
+/* Custom user menu item with avatar */
+.fi-user-menu .fi-avatar {
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}

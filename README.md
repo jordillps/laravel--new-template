@@ -20,7 +20,7 @@ A comprehensive Laravel application template with advanced security features, ro
 ### 🎨 Admin Panel with Filament
 - **Modern Interface** - Clean and intuitive admin panel using Filament v4
 - **Custom Branding** - Corporate logo and color scheme integration
-- **User Management** - Complete user administration interface
+- **User Management** - Complete user administration with avatar support
 - **Role & Permission Management** - Visual management of RBAC system
 - **Dashboard Analytics** - User statistics and system overview
 
@@ -33,6 +33,7 @@ A comprehensive Laravel application template with advanced security features, ro
 
 ### 🎨 Visual Customization
 - **Custom Color Palette** - 11-tone green corporate color scheme
+- **User Avatars** - Profile pictures in navigation menu and user management
 - **Responsive Design** - Mobile-friendly interface across all components
 - **Brand Integration** - Consistent corporate branding throughout the application
 
@@ -103,6 +104,9 @@ Two-factor authentication is enabled by default. Users can enable it from their 
 
 ### Logo Configuration
 Place your company logo in `public/media/avatars/logo.png` for email templates.
+
+### Avatar Configuration
+User avatars are automatically managed through the admin panel. Users can upload profile pictures that will appear in the navigation menu and throughout the interface.
 
 ## 🧪 Testing
 
