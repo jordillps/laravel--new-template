@@ -47,19 +47,6 @@ class AdminPanelProvider extends PanelProvider
             ->multiFactorAuthentication([EmailAuthentication::make()])
             ->colors([
                 'primary' => [
-                    50 => '236, 253, 245',   // Verde muy claro
-                    100 => '209, 250, 229',  // Verde claro pastel
-                    200 => '167, 243, 208',  // Verde claro
-                    300 => '110, 231, 183',  // Verde suave
-                    400 => '52, 211, 153',   // Verde medio-claro
-                    500 => '16, 185, 129',   // Verde principal
-                    600 => '5, 150, 105',    // Verde medio
-                    700 => '4, 120, 87',     // Verde medio-oscuro
-                    800 => '6, 95, 70',      // Verde oscuro
-                    900 => '6, 78, 59',      // Verde muy oscuro
-                    950 => '2, 44, 34',      // Verde casi negro
-                ],
-                'blue' => [
                     50 => '239, 246, 255',   // Azul muy claro
                     100 => '219, 234, 254',  // Azul claro
                     200 => '191, 219, 254',  // Azul medio-claro
@@ -71,6 +58,19 @@ class AdminPanelProvider extends PanelProvider
                     800 => '30, 64, 175',    // Azul muy oscuro
                     900 => '30, 58, 138',    // Azul profundo
                     950 => '23, 37, 84',     // Azul casi negro
+                ],
+                'green' => [
+                    50 => '236, 253, 245',   // Verde muy claro
+                    100 => '209, 250, 229',  // Verde claro pastel
+                    200 => '167, 243, 208',  // Verde claro
+                    300 => '110, 231, 183',  // Verde suave
+                    400 => '52, 211, 153',   // Verde medio-claro
+                    500 => '16, 185, 129',   // Verde principal
+                    600 => '5, 150, 105',    // Verde medio
+                    700 => '4, 120, 87',     // Verde medio-oscuro
+                    800 => '6, 95, 70',      // Verde oscuro
+                    900 => '6, 78, 59',      // Verde muy oscuro
+                    950 => '2, 44, 34',      // Verde casi negro
                 ],
             ])
             ->font('Roboto')

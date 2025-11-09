@@ -35,7 +35,7 @@ class UsersTable
                     ->label(__('Roles'))
                     ->badge()
                     ->color(function ($state) {
-                        return $state === 'super_admin' ? 'blue' : 'primary';
+                        return $state === 'super_admin' ? 'green' : 'primary';
                     })
                     ->separator(', ')
                     ->searchable(),
