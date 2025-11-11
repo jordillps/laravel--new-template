@@ -57,7 +57,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // Crear roles
         $superAdminRole = Role::firstOrCreate(['name' => 'super_admin']);
         $usuarioRole = Role::firstOrCreate(['name' => 'Usuario']);
-        $viewerRole = Role::firstOrCreate(['name' => 'Viewer']);
+        $viewerRole = Role::firstOrCreate(['name' => 'Visor']);
         $editorRole = Role::firstOrCreate(['name' => 'Editor']);
 
         // Asignar permisos a roles
@@ -102,7 +102,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'name' => 'Usuario Viewer',
             'password' => Hash::make('Password123!')
         ]);
-        $viewer->assignRole('Viewer');
+        $viewer->assignRole('Visor');
 
         $editor = User::firstOrCreate([
             'email' => 'editor@example.com'

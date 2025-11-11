@@ -120,14 +120,23 @@ class UserResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        // Solo puede editar si tiene permiso Update:User O si es su propio usuario
-        // ViewAny:User solo da permisos de visualización, no de edición
+        // Si el registro es un super_admin, solo otros super_admin pueden editarlo
+        if ($record->hasRole('super_admin')) {
+            return Auth::user()->hasRole('super_admin');
+        }
+
+        // Para usuarios normales: pueden editar si tienen permiso Update:User O si es su propio usuario
         return Auth::user()->can('Update:User') || Auth::user()->id === $record->id;
     }
 
     public static function canDelete(Model $record): bool
     {
-        // Solo puede borrar si tiene permiso (no puede borrarse a sí mismo)
+        // Los usuarios super_admin no pueden ser eliminados por nadie (ni siquiera por otros super_admin)
+        if ($record->hasRole('super_admin')) {
+            return false;
+        }
+
+        // Para usuarios normales: solo puede borrar si tiene permiso (no puede borrarse a sí mismo)
         return Auth::user()->can('Delete:User') && Auth::user()->id !== $record->id;
     }
 

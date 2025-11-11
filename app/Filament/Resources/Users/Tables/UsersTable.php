@@ -6,9 +6,11 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\ImageColumn;
+use Illuminate\Support\Facades\Auth;
 
 class UsersTable
 {
@@ -55,7 +57,10 @@ class UsersTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn($record) => \App\Filament\Resources\Users\UserResource::canEdit($record)),
+                DeleteAction::make()
+                    ->visible(fn($record) => \App\Filament\Resources\Users\UserResource::canDelete($record)),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

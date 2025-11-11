@@ -303,5 +303,93 @@ php artisan config:clear; php artisan view:clear
 
 -----------------------------------------------------------------------
 
+🛡️ PROTECCIÓN AVANZADA DE USUARIOS SUPER_ADMIN
+
+✅ CARACTERÍSTICAS DE SEGURIDAD IMPLEMENTADAS:
+
+🔒 Protección Contra Edición:
+- Los usuarios con rol 'super_admin' solo pueden ser editados por otros usuarios 'super_admin'
+- El botón "Editar" solo aparece cuando realmente se puede usar (UX mejorado)
+- Implementado en: UserResource::canEdit()
+- Funciona incluso si otros usuarios tienen permiso "Update:User"
+
+🚫 Protección Contra Eliminación:
+- Los usuarios con rol 'super_admin' no pueden ser eliminados por nadie
+- Protección absoluta contra borrado accidental o malicioso
+- Implementado en: UserResource::canDelete()
+
+🏷️ Identificación Visual:
+- Los usuarios super_admin aparecen con badge de color verde brillante
+- Fácil identificación en la tabla de usuarios
+- Configurado en: UsersTable.php
+
+🔧 IMPLEMENTACIÓN TÉCNICA:
+
+UserResource.php:
+```php
+public static function canEdit(Model $record): bool
+{
+    // Si el registro es un super_admin, solo otros super_admin pueden editarlo
+    if ($record->hasRole('super_admin')) {
+        return Auth::user()->hasRole('super_admin');
+    }
+    // Para usuarios normales: pueden editar si tienen permiso Update:User O si es su propio usuario
+    return Auth::user()->can('Update:User') || Auth::user()->id === $record->id;
+}
+
+public static function canDelete(Model $record): bool
+{
+    // Los usuarios super_admin no pueden ser eliminados por nadie (ni siquiera por otros super_admin)
+    if ($record->hasRole('super_admin')) {
+        return false;
+    }
+    // Para usuarios normales: solo puede borrar si tiene permiso (no puede borrarse a sí mismo)
+    return Auth::user()->can('Delete:User') && Auth::user()->id !== $record->id;
+}
+```
+
+UsersTable.php (IMPORTANTE - Configuración de acciones):
+```php
+->recordActions([
+    ViewAction::make(),
+    EditAction::make()
+        ->visible(fn($record) => \App\Filament\Resources\Users\UserResource::canEdit($record)),
+    DeleteAction::make()
+        ->visible(fn($record) => \App\Filament\Resources\Users\UserResource::canDelete($record)),
+])
+```
+
+⚠️ CONFIGURACIÓN CRÍTICA:
+- Las acciones de tabla (botones Editar/Eliminar) deben configurarse explícitamente
+- Sin la configuración `.visible()`, Filament ignora los métodos de autorización del Resource
+- La referencia debe ser exacta: `\App\Filament\Resources\Users\UserResource::canEdit($record)`
+
+💡 LÓGICA MEJORADA:
+- **Botón Editar**: Solo aparece si realmente se puede usar
+- **Super_admin vs Super_admin**: Los super_admin pueden editar otros perfiles de super_admin
+- **Usuarios normales**: Mantienen la funcionalidad original (editar con permisos o perfil propio)
+- **Eliminación**: Los super_admin están completamente protegidos contra borrado
+
+🧪 PROBAR PROTECCIÓN:
+1. Crear usuarios con diferentes roles
+2. Intentar editar perfil de super_admin desde usuario normal
+3. Verificar que solo el super_admin puede editar su propio perfil
+4. Confirmar que ningún super_admin puede ser eliminado
+
+⚠️ NOTAS IMPORTANTES:
+- Esta protección es adicional a los permisos de Spatie
+- Funciona a nivel de recurso Filament
+- No afecta la funcionalidad normal de usuarios regulares
+- El super_admin mantiene todos sus permisos normales
+- **CRÍTICO**: Las acciones de tabla deben configurarse con `.visible()` para respetar la autorización
+
+🐛 PROBLEMA COMÚN Y SOLUCIÓN:
+Si los usuarios con roles inferiores aún pueden editar super_admin:
+1. Verificar que `UsersTable.php` tenga las acciones configuradas con `.visible()`
+2. Ejecutar `php artisan config:clear ; php artisan cache:clear ; php artisan view:clear`
+3. La configuración `.visible()` es obligatoria para que Filament respete los métodos del Resource
+
+-----------------------------------------------------------------------
+
 
 

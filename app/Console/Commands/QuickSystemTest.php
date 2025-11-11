@@ -45,7 +45,7 @@ class QuickSystemTest extends Command
 
         // Test 2: Verificar roles
         $this->info('2️⃣ Verificando roles...');
-        $requiredRoles = ['super_admin', 'Usuario', 'Viewer', 'Editor'];
+        $requiredRoles = ['super_admin', 'Usuario', 'Visor', 'Editor'];
         foreach ($requiredRoles as $roleName) {
             $role = Role::where('name', $roleName)->first();
             if ($role) {
@@ -93,11 +93,11 @@ class QuickSystemTest extends Command
 
         // Test 5: Verificar permisos específicos
         $this->info('5️⃣ Verificando permisos específicos...');
-        $viewer = User::role('Viewer')->first();
+        $viewer = User::role('Visor')->first();
         if ($viewer && $viewer->can('ViewAny:User') && !$viewer->can('Update:User')) {
-            $this->line("   ✅ Viewer tiene permisos correctos");
+            $this->line("   ✅ Visor tiene permisos correctos");
         } else {
-            $this->error("   ❌ Viewer no tiene permisos correctos");
+            $this->error("   ❌ Visor no tiene permisos correctos");
             $allPassed = false;
         }
 

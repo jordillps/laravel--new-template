@@ -24,7 +24,7 @@ class RolePermissionTest extends TestCase
         // Crear roles
         Role::create(['name' => 'super_admin']);
         Role::create(['name' => 'Usuario']);
-        Role::create(['name' => 'Viewer']);
+        Role::create(['name' => 'Visor']);
         Role::create(['name' => 'Editor']);
     }
 
@@ -46,9 +46,9 @@ class RolePermissionTest extends TestCase
     public function viewer_can_only_view_users()
     {
         $viewer = User::factory()->create();
-        $viewer->assignRole('Viewer');
+        $viewer->assignRole('Visor');
         
-        $role = Role::findByName('Viewer');
+        $role = Role::findByName('Visor');
         $role->givePermissionTo(['ViewAny:User']);
         
         $this->assertTrue($viewer->can('ViewAny:User'));
