@@ -49,5 +49,6 @@
     "Enter the authentication code": "Enter the authentication code",
     "Mi Perfil": "My Profile",
     "Roles": "Roles",
-    "password_help": "Minimum 8 characters, must include uppercase, lowercase, number and special character"
+    "password_help": "Minimum 8 characters, must include uppercase, lowercase, number and special character",
+    "additional_information": "Additional Information"
 }

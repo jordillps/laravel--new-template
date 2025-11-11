@@ -13,5 +13,6 @@
     "Password": "Contrasenya",
     "Confirm Password": "Confirmar contrasenya",
     "Roles": "Rols",
-    "password_help": "Mínim 8 caràcters, ha d'incloure majúscula, minúscula, número i caràcter especial"
+    "password_help": "Mínim 8 caràcters, ha d'incloure majúscula, minúscula, número i caràcter especial",
+    "additional_information": "Informació addicional"
 }

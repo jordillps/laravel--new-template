@@ -53,5 +53,6 @@
     "Roles": "Roles",
     "Password": "Contraseña",
     "Confirm Password": "Confirmar contraseña",
-    "password_help": "Mínimo 8 caracteres, debe incluir mayúscula, minúscula, número y carácter especial"
+    "password_help": "Mínimo 8 caracteres, debe incluir mayúscula, minúscula, número y carácter especial",
+    "additional_information": "Información adicional"
 }

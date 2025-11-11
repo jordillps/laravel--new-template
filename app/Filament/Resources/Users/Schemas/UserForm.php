@@ -8,6 +8,7 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Fieldset;
 
 class UserForm
 {
@@ -30,37 +31,30 @@ class UserForm
                             ->email()
                             ->required(),
                     ])->columnSpanFull(),
-                TextInput::make('password')
-                    ->label(__('Password'))
-                    ->password()
-                    ->required()
-                    ->minLength(8)
-                    ->confirmed()
-                    ->revealable()
-                    ->helperText(__('password_help'))
-                    ->visible(fn (string $operation): bool => $operation === 'create'),
-                TextInput::make('password_confirmation')
-                    ->label(__('Confirm Password'))
-                    ->password()
-                    ->required()
-                    ->revealable()
-                    ->visible(fn (string $operation): bool => $operation === 'create'),
-                Select::make('roles')
-                    ->preload()
-                    ->multiple()
-                    ->label('Rols')                   
-                    ->relationship('roles', 'name')
-                    ->required(),
-                TextInput::make('address')
-                    ->label(__('address')),
-                TextInput::make('city')
-                    ->label(__('city')),
-                TextInput::make('province')
-                    ->label(__('province')),
-                TextInput::make('country')
-                    ->label(__('country')),
-                TextInput::make('postal_code')
-                    ->label(__('postal code')),
+                Grid::make(3)
+                    ->schema([
+                        TextInput::make('password')
+                            ->label(__('Password'))
+                            ->password()
+                            ->required()
+                            ->minLength(8)
+                            ->confirmed()
+                            ->revealable()
+                            ->helperText(__('password_help'))
+                            ->visible(fn(string $operation): bool => $operation === 'create'),
+                        TextInput::make('password_confirmation')
+                            ->label(__('Confirm Password'))
+                            ->password()
+                            ->required()
+                            ->revealable()
+                            ->visible(fn(string $operation): bool => $operation === 'create'),
+                        Select::make('roles')
+                            ->preload()
+                            ->multiple()
+                            ->label(__('Roles'))
+                            ->relationship('roles', 'name')
+                            ->required(),
+                    ])->columnSpanFull(),
                 FileUpload::make('avatar')
                     ->label(__('avatar'))
                     ->disk('avatars')
@@ -75,6 +69,20 @@ class UserForm
                 DateTimePicker::make('email_verified_at')
                     ->label(__('email verified at'))
                     ->disabled(),
-            ]);
+            //Fieldset para datos adicionales
+            Fieldset::make(__('additional_information'))
+                ->schema([
+                    TextInput::make('address')
+                        ->label(__('address')),
+                    TextInput::make('city')
+                        ->label(__('city')),
+                    TextInput::make('province')
+                        ->label(__('province')),
+                    TextInput::make('country')
+                        ->label(__('country')),
+                    TextInput::make('postal_code')
+                        ->label(__('postal code')),
+            ])->columnSpanFull(),
+        ]);
     }
 }
