@@ -82,6 +82,15 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
     {
         parent::boot();
 
+        // Cuando se crea un nuevo usuario, asignar rol "Usuario" automáticamente
+        static::created(function ($user) {
+            // Verificar que el rol "Usuario" existe
+            $userRole = \Spatie\Permission\Models\Role::where('name', 'Usuario')->first();
+            if ($userRole) {
+                $user->assignRole('Usuario');
+            }
+        });
+
         // Cuando se actualiza un usuario
         static::updating(function ($user) {
             // Si el avatar ha cambiado y había un avatar anterior
