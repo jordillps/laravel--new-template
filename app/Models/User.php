@@ -82,12 +82,12 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
     {
         parent::boot();
 
-        // Cuando se crea un nuevo usuario, asignar rol "Usuario" automáticamente
+        // Cuando se crea un nuevo usuario, asignar rol "Escritor" automáticamente
         static::created(function ($user) {
-            // Verificar que el rol "Usuario" existe
-            $userRole = \Spatie\Permission\Models\Role::where('name', 'Usuario')->first();
-            if ($userRole) {
-                $user->assignRole('Usuario');
+            // Verificar que el rol "Escritor" existe
+            $escritorRole = \Spatie\Permission\Models\Role::where('name', 'Escritor')->first();
+            if ($escritorRole) {
+                $user->assignRole('Escritor');
             }
         });
 
@@ -167,5 +167,13 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
     public function sendTwoFactorAuthNotification($code): void
     {
         $this->notify(new CustomTwoFactorAuth($code));
+    }
+
+    /**
+     * Relación con publicaciones
+     */
+    public function posts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Post::class);
     }
 }

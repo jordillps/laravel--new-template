@@ -184,9 +184,11 @@ Después del reset, tendrás estos usuarios disponibles:
 | Email                    | Password      | Rol        | Permisos                |
 |--------------------------|---------------|------------|-------------------------|
 | jordillps@gmail.com      | Password123!  | super_admin| Todos                   |
-| user@example.com         | Password123!  | Usuario    | Solo su perfil          |
-| viewer@example.com       | Password123!  | Viewer     | Ver todos los usuarios  |
+| user@example.com         | Password123!  | **Escritor**| Posts + Su perfil      |
+| viewer@example.com       | Password123!  | Visor      | Ver todos los usuarios  |
 | editor@example.com       | Password123!  | Editor     | Ver y editar usuarios   |
+
+⚠️ CAMBIO IMPORTANTE: Ahora los usuarios nuevos reciben automáticamente el rol **"Escritor"** en lugar de "Usuario".
 
 🎯 VERIFICAR QUE TODO FUNCIONA:
 
@@ -388,6 +390,161 @@ Si los usuarios con roles inferiores aún pueden editar super_admin:
 1. Verificar que `UsersTable.php` tenga las acciones configuradas con `.visible()`
 2. Ejecutar `php artisan config:clear ; php artisan cache:clear ; php artisan view:clear`
 3. La configuración `.visible()` es obligatoria para que Filament respete los métodos del Resource
+
+-----------------------------------------------------------------------
+
+📝 RECURSO DE POSTS (SISTEMA DE BLOG)
+
+✅ FUNCIONALIDADES IMPLEMENTADAS:
+
+📋 Modelo Post Completo:
+- Título, slug (URL amigable), resumen, contenido
+- Imagen destacada, estado (borrador/publicado/archivado)
+- Sistema de posts destacados (is_featured)
+- Relación con usuarios (autor)
+- Fecha de publicación programable
+- Meta datos para SEO
+
+🔧 Migración y Estructura:
+```bash
+php artisan make:model Post -m
+php artisan migrate
+```
+
+Campos principales:
+- title, slug, excerpt, content
+- featured_image, status, is_featured
+- user_id (autor), published_at
+- meta_data (JSON para datos adicionales)
+
+🎨 Formulario Avanzado (PostForm.php):
+- Generación automática de slug desde el título
+- Editor de texto enriquecido para contenido
+- Upload de imagen destacada con validación
+- Campo de fecha de publicación condicional
+- Validaciones y traducciones completas
+
+📊 Tabla Optimizada (PostsTable.php):
+- Vista previa de imagen destacada
+- Badges coloridos para estados
+- Filtros por estado, autor y destacados
+- Búsqueda por título y autor
+- Acciones con autorización aplicada
+
+🛡️ Sistema de Permisos:
+- Permisos generados automáticamente con Shield
+- **Rol "Escritor"**: Puede crear y editar sus propios posts
+- **Rol "Editor"**: Puede gestionar posts de cualquier usuario
+- **Rol "super_admin"**: Tiene acceso completo
+- Autorización basada en roles y propiedad de contenido
+
+🔒 AUTORIZACIÓN DETALLADA:
+
+Crear Posts:
+- ✅ Escritor: Puede crear posts
+- ✅ Editor: Puede crear posts
+- ✅ super_admin: Puede crear posts
+
+Editar Posts:
+- ✅ Escritor: Solo sus propios posts
+- ✅ Editor: Posts de cualquier usuario
+- ✅ super_admin: Cualquier post
+
+Eliminar Posts:
+- ✅ Escritor: Solo sus propios posts (si tiene permiso Delete:Post)
+- ✅ Editor: Posts de cualquier usuario
+- ✅ super_admin: Cualquier post
+
+📋 Posts de Ejemplo (PostSeeder):
+- 5 posts de ejemplo con diferentes estados
+- Contenido realista para pruebas
+- **Solo asignados a usuarios con rol "Escritor" o "super_admin"**
+- Limpieza automática de posts existentes
+- Creación automática de usuarios escritores si no existen
+
+🔍 COMANDOS IMPORTANTES:
+
+# Generar permisos de Shield para Posts
+php artisan shield:generate --all
+
+# Asignar permisos al super_admin
+php artisan role:assign-all-permissions super_admin
+
+# Crear posts de ejemplo
+php artisan db:seed --class=PostSeeder
+
+🖊️ ROL "ESCRITOR" COMO ROL PREDETERMINADO:
+
+**CAMBIO IMPORTANTE**: Los nuevos usuarios registrados reciben automáticamente el rol "Escritor".
+
+🔧 Implementación en User.php:
+```php
+static::created(function ($user) {
+    // Verificar que el rol "Escritor" existe
+    $escritorRole = \Spatie\Permission\Models\Role::where('name', 'Escritor')->first();
+    if ($escritorRole) {
+        $user->assignRole('Escritor');
+    }
+});
+```
+
+Permisos del rol Escritor:
+- View:Post (ver posts)
+- Create:Post (crear posts) 
+- Update:Post (editar posts)
+- **Update:User (modificar su propio usuario)**
+
+Ventajas del cambio:
+- Usuarios pueden crear contenido inmediatamente tras registrarse
+- Pueden gestionar su perfil sin permisos adicionales
+- Ideal para plataformas de blogging o creación de contenido
+- Separación clara de responsabilidades desde el inicio
+
+Usuarios afectados por el cambio:
+- user@example.com ahora tiene rol "Escritor" (antes "Usuario")
+- Nuevos registros automáticamente reciben "Escritor"
+- Comportamiento del sistema no cambia para roles existentes
+
+Gestión automática en PostSeeder:
+- Verifica la existencia del rol "Escritor"
+- Busca usuarios con roles "Escritor" o "super_admin"
+- Si no hay escritores, los crea automáticamente o asigna el rol
+- Solo asigna posts a usuarios autorizados para crearlos
+
+Usuarios Escritor creados automáticamente:
+- María Escritora (maria.escritora@example.com)
+- Carlos Redactor (carlos.redactor@example.com)
+- Password: Password123! (para ambos)
+
+🎯 ESTRUCTURA DE ARCHIVOS:
+```
+app/Filament/Resources/Posts/
+├── PostResource.php           # Recurso principal
+├── Schemas/
+│   └── PostForm.php          # Formulario de creación/edición
+├── Tables/
+│   └── PostsTable.php        # Tabla de listado
+└── Pages/
+    ├── ListPosts.php         # Página de listado
+    ├── CreatePost.php        # Página de creación
+    └── EditPost.php          # Página de edición
+```
+
+💡 CARACTERÍSTICAS DESTACADAS:
+- Slug automático desde el título
+- Vista previa de imágenes en la tabla
+- Filtros avanzados (estado, autor, destacados)
+- Autorización granular por autor
+- Estados visuales con badges
+- Fecha de publicación programable
+- Sistema de posts destacados
+
+🔒 AUTORIZACIÓN IMPLEMENTADA:
+- Los usuarios pueden crear posts si tienen permiso
+- Solo pueden editar sus propios posts (excepto roles superiores)
+- Editores pueden gestionar posts de cualquier usuario
+- Super_admin tiene control total
+- Acciones de tabla respetan la autorización
 
 -----------------------------------------------------------------------
 

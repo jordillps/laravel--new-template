@@ -57,6 +57,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // Crear roles
         $superAdminRole = Role::firstOrCreate(['name' => 'super_admin']);
         $usuarioRole = Role::firstOrCreate(['name' => 'Usuario']);
+        $escritorRole = Role::firstOrCreate(['name' => 'Escritor']);
         $viewerRole = Role::firstOrCreate(['name' => 'Visor']);
         $editorRole = Role::firstOrCreate(['name' => 'Editor']);
 
@@ -70,6 +71,8 @@ class RolesAndPermissionsSeeder extends Seeder
         
         // El rol "Editor" puede ver y editar usuarios
         $editorRole->givePermissionTo(['ViewAny:User', 'View:User', 'Update:User']);
+
+        // NOTA: Los permisos del rol "Escritor" se asignarán después de generar los permisos de Shield
 
         // Crear usuarios de prueba
        $superAdmin = User::firstOrCreate([
@@ -94,7 +97,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'name' => 'Usuario Normal',
             'password' => Hash::make('Password123!')
         ]);
-        $usuario->assignRole('Usuario');
+        $usuario->assignRole('Escritor'); // Cambiado de 'Usuario' a 'Escritor'
 
         $viewer = User::firstOrCreate([
             'email' => 'viewer@example.com'
@@ -114,6 +117,25 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Generar automáticamente todos los permisos de Shield si no existen
         $this->generateShieldPermissions();
+
+        // Asignar permisos específicos al rol Escritor después de que se generen los permisos de Post
+        $escritorRole = Role::where('name', 'Escritor')->first();
+        if ($escritorRole) {
+            // Verificar que los permisos de Post existan antes de asignarlos
+            $postPermissions = ['ViewAny:Post', 'View:Post', 'Create:Post', 'Update:Post', 'Update:User'];
+            $existingPostPermissions = [];
+            
+            foreach ($postPermissions as $permission) {
+                if (Permission::where('name', $permission)->exists()) {
+                    $existingPostPermissions[] = $permission;
+                }
+            }
+            
+            if (!empty($existingPostPermissions)) {
+                $escritorRole->givePermissionTo($existingPostPermissions);
+                $this->command->info('Permisos asignados al rol Escritor: ' . implode(', ', $existingPostPermissions));
+            }
+        }
 
         $this->command->info('Roles, permisos y usuarios de prueba creados exitosamente.');
     }

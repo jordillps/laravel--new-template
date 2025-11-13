@@ -47,6 +47,10 @@ class ResetApplication extends Command
         $exitCode = $this->call('shield:generate', [], $this->getOutput());
         if ($exitCode === 0) {
             $this->info('   ✅ Permisos generados exitosamente');
+            
+            // Asignar permisos de Post al rol Escritor
+            $this->info('   📝 Asignando permisos de publicaciones al rol Escritor...');
+            $this->assignPostPermissionsToEscritor();
         }
         
         // 3. Asignar todos los permisos al super_admin
@@ -68,10 +72,45 @@ class ResetApplication extends Command
         $this->info('🌐 Información de acceso:');
         $this->line('Panel Admin: http://127.0.0.1:8001/admin');
         $this->line('Super Admin: jordillps@gmail.com / Password123!');
-        $this->line('Usuario Normal: user@example.com / Password123!');
+        $this->line('Usuario Escritor: user@example.com / Password123!');
         $this->line('Viewer: viewer@example.com / Password123!');
         $this->line('Editor: editor@example.com / Password123!');
+        $this->newLine();
+        $this->info('📝 Nota: Los usuarios con rol "Escritor" pueden gestionar publicaciones.');
         
         return 0;
+    }
+    
+    /**
+     * Asigna permisos de publicaciones al rol Escritor
+     */
+    private function assignPostPermissionsToEscritor(): void
+    {
+        $escritorRole = \Spatie\Permission\Models\Role::where('name', 'Escritor')->first();
+        
+        if ($escritorRole) {
+            // Permisos que el Escritor debe tener
+            $permissions = [
+                'ViewAny:Post',
+                'View:Post', 
+                'Create:Post',
+                'Update:Post',
+                'Update:User'
+            ];
+            
+            // Verificar que cada permiso existe antes de asignarlo
+            $validPermissions = [];
+            foreach ($permissions as $permission) {
+                if (\Spatie\Permission\Models\Permission::where('name', $permission)->exists()) {
+                    $validPermissions[] = $permission;
+                }
+            }
+            
+            // Asignar los permisos válidos
+            if (!empty($validPermissions)) {
+                $escritorRole->syncPermissions($validPermissions);
+                $this->info('   ✅ Permisos de publicaciones asignados al Escritor: ' . implode(', ', $validPermissions));
+            }
+        }
     }
 }
