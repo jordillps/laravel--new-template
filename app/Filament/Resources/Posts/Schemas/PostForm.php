@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
+use App\Helpers\SettingsHelper;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
@@ -18,52 +19,71 @@ class PostForm
 {
     public static function configure(Schema $schema): Schema
     {
+        $availableLanguages = SettingsHelper::getAvailableLanguages();
+        
+        $languageNames = [
+            'es' => 'Español',
+            'en' => 'English', 
+            'ca' => 'Català',
+            'fr' => 'Français',
+            'de' => 'Deutsch',
+        ];
+
         return $schema
             ->components([
-                TextInput::make('title')
-                    ->label(__('Título'))
-                    ->required()
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(fn (string $operation, $state, callable $set) => 
-                        $operation === 'create' ? $set('slug', Str::slug($state)) : null
-                    )
-                    ->columnSpan(2),
-                
-                TextInput::make('slug')
-                    ->label(__('URL amigable'))
-                    ->required()
-                    ->unique(ignoreRecord: true)
-                    ->helperText(__('Se genera automáticamente del título'))
-                    ->columnSpan(2),
+                // Campos por idioma
+                ...collect($availableLanguages)->flatMap(function ($locale) use ($languageNames) {
+                    return [
+                        TextInput::make("title_multilang.{$locale}")
+                            ->label(__('Título') . " ({$languageNames[$locale]})")
+                            ->required($locale === 'es') // Español requerido, otros opcionales
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (string $operation, $state, callable $set, callable $get) use ($locale) {
+                                if ($operation === 'create' && $state) {
+                                    $slugs = $get('slug_multilang') ?? [];
+                                    $slugs[$locale] = Str::slug($state);
+                                    $set('slug_multilang', $slugs);
+                                }
+                            })
+                            ->columnSpan(2),
                         
-                Textarea::make('excerpt')
-                    ->label(__('Resumen'))
-                    ->rows(3)
-                    ->helperText(__('Breve descripción de la publicación (opcional)'))
-                    ->columnSpanFull(),
-                        
-                RichEditor::make('content')
-                    ->label(__('Contenido'))
-                    ->required()
-                    ->helperText(__('Contenido principal de la publicación'))
-                    ->toolbarButtons([
-                        'attachFiles',
-                        'blockquote',
-                        'bold',
-                        'bulletList',
-                        'codeBlock',
-                        'h2',
-                        'h3',
-                        'italic',
-                        'link',
-                        'orderedList',
-                        'redo',
-                        'strike',
-                        'underline',
-                        'undo',
-                    ])
-                    ->columnSpanFull(),
+                        TextInput::make("slug_multilang.{$locale}")
+                            ->label(__('URL amigable') . " ({$languageNames[$locale]})")
+                            ->required($locale === 'es')
+                            ->helperText(__('Se genera automáticamente del título'))
+                            ->columnSpan(2),
+                            
+                        Textarea::make("excerpt_multilang.{$locale}")
+                            ->label(__('Resumen') . " ({$languageNames[$locale]})")
+                            ->rows(2)
+                            ->helperText(__('Breve descripción de la publicación (opcional)'))
+                            ->columnSpanFull(),
+                            
+                        RichEditor::make("content_multilang.{$locale}")
+                            ->label(__('Contenido') . " ({$languageNames[$locale]})")
+                            ->required($locale === 'es')
+                            ->helperText(__('Contenido principal de la publicación'))
+                            ->toolbarButtons([
+                                'attachFiles',
+                                'blockquote',
+                                'bold',
+                                'bulletList',
+                                'codeBlock',
+                                'h2',
+                                'h3',
+                                'italic',
+                                'link',
+                                'orderedList',
+                                'redo',
+                                'strike',
+                                'underline',
+                                'undo',
+                            ])
+                            ->columnSpanFull(),
+                    ];
+                })->toArray(),
 
+                // Separador visual
                 Select::make('status')
                     ->label(__('Estado'))
                     ->options([
@@ -74,16 +94,19 @@ class PostForm
                     ->default('draft')
                     ->required()
                     ->live()
-                    ->native(false),
+                    ->native(false)
+                    ->columnSpan(1),
                     
                 DateTimePicker::make('published_at')
                     ->label(__('Fecha de Publicación'))
                     ->helperText(__('Dejar vacío para publicar inmediatamente'))
-                    ->visible(fn ($get) => $get('status') === 'published'),
+                    ->visible(fn ($get) => $get('status') === 'published')
+                    ->columnSpan(1),
                     
                 Toggle::make('is_featured')
                     ->label(__('Publicación Destacada'))
-                    ->helperText(__('Aparecerá en destacados')),
+                    ->helperText(__('Aparecerá en destacados'))
+                    ->columnSpan(2),
 
                 FileUpload::make('featured_image')
                     ->label(__('Imagen Destacada'))

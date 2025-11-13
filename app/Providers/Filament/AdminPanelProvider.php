@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Helpers\SettingsHelper;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -35,16 +36,32 @@ class AdminPanelProvider extends PanelProvider
 
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        $panelConfig = $panel
             ->default() // Ensure this method is implemented and returns a valid object
             ->id('admin')
             ->path('admin')
             ->login()
             ->profile()
-            ->registration()
-            ->emailVerification()
-            ->passwordReset()
-            ->multiFactorAuthentication([EmailAuthentication::make()])
+            ->passwordReset();
+
+        // Configurar registro dinámicamente basado en configuración
+        try {
+            if (SettingsHelper::isUserRegistrationEnabled()) {
+                $panelConfig->registration();
+            }
+            
+            if (SettingsHelper::isEmailVerificationRequired()) {
+                $panelConfig->emailVerification();
+            }
+            
+            // 2FA se configura a nivel de usuario individual
+            $panelConfig->multiFactorAuthentication([EmailAuthentication::make()]);
+        } catch (\Exception $e) {
+            // Si no se puede acceder a configuraciones, usar valores por defecto
+            $panelConfig->registration()->emailVerification();
+        }
+
+        return $panelConfig
             ->colors([
                 'primary' => [
                     50 => '239, 246, 255',   // Azul muy claro

@@ -39,6 +39,10 @@ class ResetApplication extends Command
         $this->info('1️⃣ Ejecutando migrate:fresh --seed...');
         $this->call('migrate:fresh', ['--seed' => true]);
         
+        // Crear configuración por defecto
+        $this->info('📝 Creando configuración por defecto...');
+        $this->call('db:seed', ['--class' => 'SettingSeeder']);
+        
         // 2. Generar permisos de Shield
         $this->info('2️⃣ Generando permisos de Shield...');
         $this->info('   Ejecutando shield:generate --all automáticamente...');
