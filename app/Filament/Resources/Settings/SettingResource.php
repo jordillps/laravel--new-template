@@ -64,27 +64,37 @@ class SettingResource extends Resource
     // Métodos de autorización - Solo super_admin
     public static function canViewAny(): bool
     {
-        return Auth::user() && Auth::user()->hasRole('super_admin');
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        return $user && $user->hasRole('super_admin');
     }
 
     public static function canCreate(): bool
     {
-        return Auth::user() && Auth::user()->hasRole('super_admin');
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        return $user && $user->hasRole('super_admin');
     }
 
     public static function canEdit(Model $record): bool
     {
-        return Auth::user() && Auth::user()->hasRole('super_admin');
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        return $user && $user->hasRole('super_admin');
     }
 
     public static function canDelete(Model $record): bool
     {
-        return Auth::user() && Auth::user()->hasRole('super_admin');
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        return $user && $user->hasRole('super_admin');
     }
 
     public static function canDeleteAny(): bool
     {
-        return Auth::user() && Auth::user()->hasRole('super_admin');
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        return $user && $user->hasRole('super_admin');
     }
 
     public static function getNavigationLabel(): string

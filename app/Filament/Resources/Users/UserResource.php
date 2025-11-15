@@ -43,15 +43,32 @@ class UserResource extends Resource
     // Mostrar navegación si tiene permisos O si es usuario para ver su perfil
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()->can('ViewAny:User') || Auth::user()->hasRole('Usuario');
+        /** @var User $user */
+        $user = Auth::user();
+        
+        // Verificar si tiene permiso ViewAny:User mediante Gate
+        if ($user && app('auth')->guard()->hasUser() && $user->hasPermissionTo('ViewAny:User')) {
+            return true;
+        }
+        
+        // O si tiene rol Usuario o Escritor (para ver su propio perfil)
+        return $user && ($user->hasRole('Usuario') || $user->hasRole('Escritor'));
     }
 
     // Cambiar el label de navegación según el tipo de usuario
     public static function getNavigationLabel(): string
     {
-        if (Auth::user()->hasRole('Usuario')) {
-            return 'Mi Perfil';
+        /** @var User $user */
+        $user = Auth::user();
+        
+        // Si es Usuario o Escritor y no puede ver todos los usuarios, mostrar "Mi Perfil"
+        if ($user && ($user->hasRole('Usuario') || $user->hasRole('Escritor'))) {
+            // Verificar si NO tiene permiso para ver todos los usuarios
+            if (!$user->hasPermissionTo('ViewAny:User')) {
+                return 'Mi Perfil';
+            }
         }
+        
         return 'Usuarios';
     }
 
@@ -75,9 +92,14 @@ class UserResource extends Resource
     {
         $query = parent::getEloquentQuery();
         
-        // Si el usuario tiene rol "Usuario", solo mostrar su propio registro
-        if (Auth::user()->hasRole('Usuario') && !Auth::user()->can('ViewAny:User')) {
-            $query->where('id', Auth::user()->id);
+        /** @var User $user */
+        $user = Auth::user();
+        
+        // Si el usuario tiene rol "Usuario" o "Escritor" pero no puede ver todos los usuarios, solo mostrar su propio registro
+        if ($user && ($user->hasRole('Usuario') || $user->hasRole('Escritor'))) {
+            if (!$user->hasPermissionTo('ViewAny:User')) {
+                $query->where('id', $user->id);
+            }
         }
         
         return $query;
@@ -103,45 +125,73 @@ class UserResource extends Resource
     // Métodos de políticas para Shield
     public static function canViewAny(): bool
     {
+        /** @var User $user */
+        $user = Auth::user();
+        
+        if (!$user) return false;
+        
         // Puede ver la lista si tiene permiso ViewAny:User O si solo quiere ver su propio perfil
-        return Auth::user()->can('ViewAny:User') || Auth::user()->hasRole('Usuario');
+        return $user->hasPermissionTo('ViewAny:User') || $user->hasRole('Usuario') || $user->hasRole('Escritor');
     }
 
     public static function canView(Model $record): bool
     {
-        // Puede ver si tiene permiso ViewAny:User O View:User O si es su propio usuario
-        return Auth::user()->can('ViewAny:User') || Auth::user()->can('View:User') || Auth::user()->id === $record->id;
+        /** @var User $user */
+        $user = Auth::user();
+        
+        if (!$user) return false;
+        
+        // Puede ver si tiene permisos O si es su propio usuario
+        return $user->hasPermissionTo('ViewAny:User') || 
+               $user->hasPermissionTo('View:User') || 
+               $user->id === $record->id;
     }
 
     public static function canCreate(): bool
     {
-        return Auth::user()->can('Create:User');
+        /** @var User $user */
+        $user = Auth::user();
+        
+        return $user && $user->hasPermissionTo('Create:User');
     }
 
     public static function canEdit(Model $record): bool
     {
+        /** @var User $user */
+        $user = Auth::user();
+        
+        if (!$user) return false;
+        
         // Si el registro es un super_admin, solo otros super_admin pueden editarlo
         if ($record->hasRole('super_admin')) {
-            return Auth::user()->hasRole('super_admin');
+            return $user->hasRole('super_admin');
         }
 
         // Para usuarios normales: pueden editar si tienen permiso Update:User O si es su propio usuario
-        return Auth::user()->can('Update:User') || Auth::user()->id === $record->id;
+        return $user->hasPermissionTo('Update:User') || $user->id === $record->id;
     }
 
     public static function canDelete(Model $record): bool
     {
+        /** @var User $user */
+        $user = Auth::user();
+        
+        if (!$user) return false;
+        
         // Los usuarios super_admin no pueden ser eliminados por nadie (ni siquiera por otros super_admin)
         if ($record->hasRole('super_admin')) {
             return false;
         }
 
         // Para usuarios normales: solo puede borrar si tiene permiso (no puede borrarse a sí mismo)
-        return Auth::user()->can('Delete:User') && Auth::user()->id !== $record->id;
+        return $user->hasPermissionTo('Delete:User') && $user->id !== $record->id;
     }
 
     public static function canDeleteAny(): bool
     {
-        return Auth::user()->can('Delete:User');
+        /** @var User $user */
+        $user = Auth::user();
+        
+        return $user && $user->hasPermissionTo('Delete:User');
     }
 }

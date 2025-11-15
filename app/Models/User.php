@@ -168,12 +168,4 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
     {
         $this->notify(new CustomTwoFactorAuth($code));
     }
-
-    /**
-     * Relación con publicaciones
-     */
-    public function posts(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Post::class);
-    }
 }

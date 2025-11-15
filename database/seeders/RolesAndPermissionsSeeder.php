@@ -66,6 +66,9 @@ class RolesAndPermissionsSeeder extends Seeder
         
         // El rol "Usuario" no tiene permisos especiales (solo puede gestionar su perfil)
         
+        // El rol "Escritor" puede editar su propio perfil
+        $escritorRole->givePermissionTo(['Update:User']);
+        
         // El rol "Viewer" solo puede ver todos los usuarios
         $viewerRole->givePermissionTo(['ViewAny:User', 'View:User']);
         
@@ -117,25 +120,6 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Generar automáticamente todos los permisos de Shield si no existen
         $this->generateShieldPermissions();
-
-        // Asignar permisos específicos al rol Escritor después de que se generen los permisos de Post
-        $escritorRole = Role::where('name', 'Escritor')->first();
-        if ($escritorRole) {
-            // Verificar que los permisos de Post existan antes de asignarlos
-            $postPermissions = ['ViewAny:Post', 'View:Post', 'Create:Post', 'Update:Post', 'Update:User'];
-            $existingPostPermissions = [];
-            
-            foreach ($postPermissions as $permission) {
-                if (Permission::where('name', $permission)->exists()) {
-                    $existingPostPermissions[] = $permission;
-                }
-            }
-            
-            if (!empty($existingPostPermissions)) {
-                $escritorRole->givePermissionTo($existingPostPermissions);
-                $this->command->info('Permisos asignados al rol Escritor: ' . implode(', ', $existingPostPermissions));
-            }
-        }
 
         $this->command->info('Roles, permisos y usuarios de prueba creados exitosamente.');
     }
