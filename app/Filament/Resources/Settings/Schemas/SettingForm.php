@@ -74,9 +74,9 @@ class SettingForm
 
                 // === CONFIGURACIÓN DE CONTENIDO MULTIIDIOMA ===
                 TagsInput::make('available_languages')
-                    ->label('Idiomas disponibles para contenido')
+                    ->label('Idiomas disponibles')
                     ->default(['es', 'en'])
-                    ->helperText('Idiomas en los que se pueden escribir posts (ej: es, en, ca)')
+                    ->helperText('Códigos de idioma (ej: es, en, ca)')
                     ->columnSpanFull(),
                     
                 Select::make('default_timezone')
@@ -152,14 +152,7 @@ class SettingForm
                     ->default(false)
                     ->helperText('Registrar información detallada en logs'),
                     
-                TextInput::make('posts_per_page')
-                    ->label('Publicaciones por página')
-                    ->numeric()
-                    ->default(10)
-                    ->minValue(1)
-                    ->maxValue(100)
-                    ->required()
-                    ->helperText('Número de publicaciones a mostrar por página'),
+
             ]);
     }
 }

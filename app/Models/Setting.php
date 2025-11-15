@@ -27,7 +27,6 @@ class Setting extends Model
         'custom_colors',
         'maintenance_mode',
         'detailed_logging',
-        'posts_per_page',
     ];
 
     protected $casts = [
@@ -38,7 +37,6 @@ class Setting extends Model
         'email_verification_required' => 'boolean',
         'maintenance_mode' => 'boolean',
         'detailed_logging' => 'boolean',
-        'posts_per_page' => 'integer',
     ];
 
     /**
@@ -58,7 +56,6 @@ class Setting extends Model
             'default_theme' => 'light',
             'maintenance_mode' => false,
             'detailed_logging' => false,
-            'posts_per_page' => 10,
         ]);
     }
 

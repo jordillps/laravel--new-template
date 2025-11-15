@@ -35,14 +35,6 @@ class SettingsHelper
     }
 
     /**
-     * Obtiene el número de publicaciones por página
-     */
-    public static function getPostsPerPage(): int
-    {
-        return (int) self::get('posts_per_page', 10);
-    }
-
-    /**
      * Verifica si está en modo mantenimiento
      */
     public static function isMaintenanceMode(): bool

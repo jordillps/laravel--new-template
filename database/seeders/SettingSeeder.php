@@ -33,7 +33,6 @@ class SettingSeeder extends Seeder
             'custom_colors' => null,
             'maintenance_mode' => false,
             'detailed_logging' => false,
-            'posts_per_page' => 10,
         ]);
         
         $this->command->info('✅ Configuración por defecto creada exitosamente.');
