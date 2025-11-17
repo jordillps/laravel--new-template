@@ -19,6 +19,47 @@ class SettingsHelper
     }
 
     /**
+     * Obtiene el nombre de la aplicación desde la configuración
+     */
+    public static function getAppName(): string
+    {
+        return self::get('app_name', config('app.name', 'Laravel Template'));
+    }
+
+    /**
+     * Obtiene la URL del logo de la aplicación
+     */
+    public static function getAppLogo(): ?string
+    {
+        $logo = self::get('app_logo');
+        return $logo ? asset('media/logos/' . $logo) : null;
+    }
+
+    /**
+     * Obtiene la URL del favicon de la aplicación
+     */
+    public static function getAppFavicon(): ?string
+    {
+        $favicon = self::get('app_favicon');
+        return $favicon ? asset('media/logos/' . $favicon) : null;
+    }
+
+    /**
+     * Establece un valor de configuración y limpia su cache
+     */
+    public static function set(string $key, $value)
+    {
+        $setting = Setting::first();
+        if ($setting) {
+            $setting->{$key} = $value;
+            $setting->save();
+            // Limpiar cache específico del valor actualizado
+            Cache::forget("setting_{$key}");
+        }
+        return $setting;
+    }
+
+    /**
      * Verifica si el registro de usuarios está habilitado
      */
     public static function isUserRegistrationEnabled(): bool
@@ -78,5 +119,13 @@ class SettingsHelper
                 Cache::forget("setting_{$key}");
             }
         }
+    }
+
+    /**
+     * Limpia el cache de una configuración específica
+     */
+    public static function clearCacheFor(string $key): void
+    {
+        Cache::forget("setting_{$key}");
     }
 }

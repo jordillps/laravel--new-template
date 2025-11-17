@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('settings', function (Blueprint $table) {
-            $table->dropColumn('posts_per_page');
+            // Solo eliminar la columna si existe
+            if (Schema::hasColumn('settings', 'posts_per_page')) {
+                $table->dropColumn('posts_per_page');
+            }
         });
     }
 

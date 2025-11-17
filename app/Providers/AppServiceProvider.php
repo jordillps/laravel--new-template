@@ -5,8 +5,10 @@ namespace App\Providers;
 use App\Helpers\SettingsHelper;
 use App\Models\Setting;
 use App\Observers\SettingObserver;
+use App\View\Composers\SettingsComposer;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
 use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,15 +28,18 @@ class AppServiceProvider extends ServiceProvider
     {
         // Configurar reglas de contraseña globales
         Password::defaults(function () {
-            return Password::min(8)
-                ->letters()
-                ->mixedCase()
-                ->numbers()
-                ->symbols();
+            $rule = Password::min(8);
+
+            return $this->app->isProduction()
+                        ? $rule->mixedCase()->uncompromised()
+                        : $rule;
         });
 
-        // Registrar observer para Settings
+        // Register observer
         Setting::observe(SettingObserver::class);
+
+        // Register view composer for global access to settings
+        View::composer('*', SettingsComposer::class);
 
         // Aplicar configuraciones dinámicas desde Settings
         $this->applyDynamicSettings();

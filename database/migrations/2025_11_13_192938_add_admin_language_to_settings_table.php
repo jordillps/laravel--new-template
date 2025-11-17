@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('settings', function (Blueprint $table) {
-            $table->string('admin_language', 5)->default('es')->after('contact_address');
-            $table->dropColumn('default_language');
+            // Solo agregar admin_language si no existe
+            if (!Schema::hasColumn('settings', 'admin_language')) {
+                $table->string('admin_language', 5)->default('es')->after('contact_address');
+            }
+            
+            // Solo eliminar default_language si existe
+            if (Schema::hasColumn('settings', 'default_language')) {
+                $table->dropColumn('default_language');
+            }
         });
     }
 

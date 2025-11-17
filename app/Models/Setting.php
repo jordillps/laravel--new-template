@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
+use App\Helpers\SettingsHelper;
 
 class Setting extends Model
 {
@@ -38,6 +40,67 @@ class Setting extends Model
         'maintenance_mode' => 'boolean',
         'detailed_logging' => 'boolean',
     ];
+
+    /**
+     * Boot del modelo para eventos
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Limpiar cache automáticamente cuando se actualiza la configuración
+        static::updated(function ($setting) {
+            // Manejar eliminación de logo antiguo
+            if ($setting->wasChanged('app_logo') && $setting->getOriginal('app_logo')) {
+                $oldLogo = $setting->getOriginal('app_logo');
+                $logoPath = public_path('media/logos/' . $oldLogo);
+                if (file_exists($logoPath)) {
+                    unlink($logoPath);
+                }
+            }
+            
+            // Manejar eliminación de favicon antiguo
+            if ($setting->wasChanged('app_favicon') && $setting->getOriginal('app_favicon')) {
+                $oldFavicon = $setting->getOriginal('app_favicon');
+                $faviconPath = public_path('media/logos/' . $oldFavicon);
+                if (file_exists($faviconPath)) {
+                    unlink($faviconPath);
+                }
+            }
+            
+            // Limpiar cache de todas las configuraciones
+            SettingsHelper::clearCache();
+            
+            // Si se actualiza el nombre de la app, actualizar también la configuración global
+            if ($setting->wasChanged('app_name') && $setting->app_name) {
+                config(['app.name' => $setting->app_name]);
+            }
+        });
+
+        // También limpiar cache al crear
+        static::created(function ($setting) {
+            SettingsHelper::clearCache();
+        });
+
+        // Limpiar archivos al eliminar configuración
+        static::deleting(function ($setting) {
+            // Eliminar logo si existe
+            if ($setting->app_logo) {
+                $logoPath = public_path('media/logos/' . $setting->app_logo);
+                if (file_exists($logoPath)) {
+                    unlink($logoPath);
+                }
+            }
+            
+            // Eliminar favicon si existe
+            if ($setting->app_favicon) {
+                $faviconPath = public_path('media/logos/' . $setting->app_favicon);
+                if (file_exists($faviconPath)) {
+                    unlink($faviconPath);
+                }
+            }
+        });
+    }
 
     /**
      * Obtiene la configuración general (singleton)
@@ -76,6 +139,8 @@ class Setting extends Model
         $settings = static::getSettings();
         $settings->$key = $value;
         $settings->save();
+        
+        // El cache se limpia automáticamente en el evento 'updated'
         return $settings;
     }
 }

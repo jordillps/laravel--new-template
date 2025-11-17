@@ -25,13 +25,13 @@ class SettingResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'app_name';
 
-    protected static ?string $navigationLabel = 'Configuración';
+    protected static ?string $navigationLabel = null;
 
-    protected static ?string $modelLabel = 'Configuración';
+    protected static ?string $modelLabel = null;
 
-    protected static ?string $pluralModelLabel = 'Configuración';
+    protected static ?string $pluralModelLabel = null;
 
-    protected static UnitEnum|string|null $navigationGroup = 'Sistema';
+    protected static UnitEnum|string|null $navigationGroup = null;
 
     protected static ?int $navigationSort = 999;
 
@@ -97,18 +97,23 @@ class SettingResource extends Resource
         return $user && $user->hasRole('super_admin');
     }
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.system');
+    }
+
     public static function getNavigationLabel(): string
     {
-        return __('Configuración');
+        return __('filament.navigation.settings');
     }
 
     public static function getModelLabel(): string
     {
-        return __('Configuración');
+        return __('filament.pages.settings.title');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('Configuración');
+        return __('filament.pages.settings.title');
     }
 }

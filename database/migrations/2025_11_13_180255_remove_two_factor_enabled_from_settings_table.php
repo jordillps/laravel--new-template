@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->dropColumn('two_factor_enabled');
-        });
+        // La columna 'two_factor_enabled' nunca existió en la tabla settings
+        // por lo que no hay nada que eliminar
+        if (Schema::hasColumn('settings', 'two_factor_enabled')) {
+            Schema::table('settings', function (Blueprint $table) {
+                $table->dropColumn('two_factor_enabled');
+            });
+        }
     }
 
     /**

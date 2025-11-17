@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('admin_language', 5)->default('es');
             
             // Configuración de contenido multiidioma
-            $table->json('available_languages')->default(json_encode(['es', 'en']));
+            $table->json('available_languages')->nullable();
             $table->string('default_timezone', 50)->default('Europe/Madrid');
             $table->string('date_format', 20)->default('d/m/Y');
             
@@ -49,7 +49,6 @@ return new class extends Migration
             // Configuración del Sistema
             $table->boolean('maintenance_mode')->default(false);
             $table->boolean('detailed_logging')->default(false);
-            $table->integer('posts_per_page')->default(10);
             
             $table->timestamps();
         });

@@ -12,6 +12,35 @@ use Filament\Schemas\Schema;
 
 class SettingForm
 {
+    /**
+     * Tipos MIME aceptados para imágenes de logo
+     */
+    public static function getAcceptedImageTypes(): array
+    {
+        return [
+            'image/jpeg',
+            'image/jpg', 
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'image/svg+xml',
+            'image/bmp',
+            'image/tiff',
+            'image/x-icon',
+            'image/vnd.microsoft.icon'
+        ];
+    }
+
+    /**
+     * Validar que el archivo es una imagen válida
+     */
+    public static function validateImage($file): bool
+    {
+        if (!$file) return false;
+        
+        $mimeType = $file->getMimeType();
+        return in_array($mimeType, static::getAcceptedImageTypes());
+    }
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -19,138 +48,126 @@ class SettingForm
             ->components([
                 // === INFORMACIÓN GENERAL ===
                 TextInput::make('app_name')
-                    ->label('Nombre de la aplicación')
+                    ->label(__('filament.settings.app_name'))
                     ->required()
                     ->default('Laravel Template')
                     ->columnSpanFull(),
                     
                 Textarea::make('app_description')
-                    ->label('Descripción de la aplicación')
+                    ->label(__('filament.settings.app_description'))
                     ->rows(3)
                     ->columnSpanFull(),
                     
                 FileUpload::make('app_logo')
-                    ->label('Logo de la aplicación')
-                    ->image()
-                    ->disk('public')
-                    ->directory('settings')
-                    ->maxSize(1024),
+                    ->label(__('filament.settings.app_logo'))
+                    ->disk('logos')
+                    ->visibility('public')
+                    ->maxSize(2048)
+                    ->image() // Usa validación básica de imagen
+                    ->helperText(__('filament.settings.helpers.app_logo'))
+                    ->imageResizeMode('contain')
+                    ->imageResizeTargetWidth('400')
+                    ->imageResizeTargetHeight('200'),
                     
                 FileUpload::make('app_favicon')
-                    ->label('Favicon')
-                    ->image()
-                    ->disk('public')
-                    ->directory('settings')
+                    ->label(__('filament.settings.app_favicon'))
+                    ->disk('logos')
+                    ->visibility('public')
                     ->maxSize(512)
-                    ->acceptedFileTypes(['image/x-icon', 'image/png']),
+                    ->image() // Usa validación básica de imagen
+                    ->helperText(__('filament.settings.helpers.app_favicon'))
+                    ->imageResizeMode('contain')
+                    ->imageResizeTargetWidth('32')
+                    ->imageResizeTargetHeight('32'),
 
                 // === INFORMACIÓN DE CONTACTO ===
                 TextInput::make('contact_email')
-                    ->label('Email de contacto')
+                    ->label(__('filament.settings.contact_email'))
                     ->email()
                     ->columnSpanFull(),
                     
                 TextInput::make('contact_phone')
-                    ->label('Teléfono de contacto')
+                    ->label(__('filament.settings.contact_phone'))
                     ->tel(),
                     
                 Textarea::make('contact_address')
-                    ->label('Dirección física')
+                    ->label(__('filament.settings.contact_address'))
                     ->rows(3)
                     ->columnSpanFull(),
 
                 // === CONFIGURACIÓN DEL PANEL ADMINISTRATIVO ===
                 Select::make('admin_language')
-                    ->label('Idioma del Admin')
-                    ->options([
-                        'es' => 'Español',
-                        'ca' => 'Català',
-                        'en' => 'English',
-                    ])
+                    ->label(__('filament.settings.admin_language'))
+                    ->options(__('filament.settings.language_options'))
                     ->default('es')
                     ->required()
-                    ->helperText('Idioma de toda la interfaz administrativa')
+                    ->helperText(__('filament.settings.helpers.admin_language'))
                     ->columnSpanFull(),
 
                 // === CONFIGURACIÓN DE CONTENIDO MULTIIDIOMA ===
                 TagsInput::make('available_languages')
-                    ->label('Idiomas disponibles')
+                    ->label(__('filament.settings.available_languages'))
                     ->default(['es', 'en'])
-                    ->helperText('Códigos de idioma (ej: es, en, ca)')
+                    ->helperText(__('filament.settings.helpers.available_languages'))
                     ->columnSpanFull(),
                     
                 Select::make('default_timezone')
-                    ->label('Zona horaria')
-                    ->options([
-                        'Europe/Madrid' => 'Madrid (UTC+1)',
-                        'Europe/London' => 'Londres (UTC+0)',
-                        'America/New_York' => 'Nueva York (UTC-5)',
-                        'America/Los_Angeles' => 'Los Ángeles (UTC-8)',
-                        'America/Mexico_City' => 'Ciudad de México (UTC-6)',
-                    ])
+                    ->label(__('filament.settings.default_timezone'))
+                    ->options(__('filament.settings.timezone_options'))
                     ->default('Europe/Madrid')
                     ->required(),
                     
                 Select::make('date_format')
-                    ->label('Formato de fecha')
-                    ->options([
-                        'd/m/Y' => 'dd/mm/aaaa',
-                        'm/d/Y' => 'mm/dd/aaaa',
-                        'Y-m-d' => 'aaaa-mm-dd',
-                        'd-m-Y' => 'dd-mm-aaaa',
-                    ])
+                    ->label(__('filament.settings.date_format'))
+                    ->options(__('filament.settings.date_format_options'))
                     ->default('d/m/Y')
                     ->required(),
 
                 // === CONFIGURACIÓN DE EMAIL ===
                 TextInput::make('mail_from_address')
-                    ->label('Email remitente')
+                    ->label(__('filament.settings.mail_from_address'))
                     ->email()
-                    ->helperText('Email usado para enviar notificaciones'),
+                    ->helperText(__('filament.settings.helpers.mail_from_address')),
                     
                 TextInput::make('mail_from_name')
-                    ->label('Nombre remitente')
-                    ->helperText('Nombre que aparece como remitente'),
+                    ->label(__('filament.settings.mail_from_name'))
+                    ->helperText(__('filament.settings.helpers.mail_from_name')),
                     
                 Toggle::make('email_notifications_enabled')
-                    ->label('Activar notificaciones por email')
+                    ->label(__('filament.settings.email_notifications_enabled'))
                     ->default(true)
                     ->columnSpanFull(),
 
                 // === CONFIGURACIÓN DE SEGURIDAD ===
                 Toggle::make('user_registration_enabled')
-                    ->label('Permitir registro de usuarios')
+                    ->label(__('filament.settings.user_registration_enabled'))
                     ->default(true)
-                    ->helperText('Los usuarios pueden registrarse automáticamente')
+                    ->helperText(__('filament.settings.helpers.user_registration_enabled'))
                     ->columnSpanFull(),
                     
                 Toggle::make('email_verification_required')
-                    ->label('Verificación de email obligatoria')
+                    ->label(__('filament.settings.email_verification_required'))
                     ->default(false)
-                    ->helperText('Los usuarios deben verificar su email')
+                    ->helperText(__('filament.settings.helpers.email_verification_required'))
                     ->columnSpanFull(),
 
                 // === CONFIGURACIÓN DE APARIENCIA ===
                 Select::make('default_theme')
-                    ->label('Tema por defecto')
-                    ->options([
-                        'light' => 'Claro',
-                        'dark' => 'Oscuro',
-                        'auto' => 'Automático',
-                    ])
+                    ->label(__('filament.settings.default_theme'))
+                    ->options(__('filament.settings.theme_options'))
                     ->default('light')
                     ->required(),
 
                 // === CONFIGURACIÓN DEL SISTEMA ===
                 Toggle::make('maintenance_mode')
-                    ->label('Modo mantenimiento')
+                    ->label(__('filament.settings.maintenance_mode'))
                     ->default(false)
-                    ->helperText('Activar para mostrar página de mantenimiento'),
+                    ->helperText(__('filament.settings.helpers.maintenance_mode')),
                     
                 Toggle::make('detailed_logging')
-                    ->label('Logs detallados')
+                    ->label(__('filament.settings.detailed_logging'))
                     ->default(false)
-                    ->helperText('Registrar información detallada en logs'),
+                    ->helperText(__('filament.settings.helpers.detailed_logging')),
                     
 
             ]);

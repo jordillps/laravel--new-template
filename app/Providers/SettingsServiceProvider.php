@@ -21,12 +21,19 @@ class SettingsServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Aplicar configuraciones dinámicamente
-        if ($this->app->runningInConsole()) {
-            return; // No aplicar en comandos de artisan
+        // No aplicar en comandos de artisan (excepto serve)
+        if ($this->app->runningInConsole() && !$this->app->runningUnitTests()) {
+            $command = $_SERVER['argv'][1] ?? '';
+            if ($command !== 'serve') {
+                return;
+            }
         }
 
         try {
+            // Configurar el nombre de la aplicación dinámicamente
+            $appName = SettingsHelper::getAppName();
+            Config::set('app.name', $appName);
+            
             // Configurar el registro de usuarios dinámicamente
             $registrationEnabled = SettingsHelper::isUserRegistrationEnabled();
             Config::set('app.registration_enabled', $registrationEnabled);
@@ -35,13 +42,13 @@ class SettingsServiceProvider extends ServiceProvider
             $emailVerificationRequired = SettingsHelper::isEmailVerificationRequired();
             Config::set('app.email_verification_required', $emailVerificationRequired);
             
-            // Configurar otras configuraciones de aplicación
-            $appName = SettingsHelper::get('app_name', 'Laravel Template');
-            Config::set('app.name', $appName);
+            // Configurar zona horaria por defecto
+            $timezone = SettingsHelper::getDefaultTimezone();
+            Config::set('app.timezone', $timezone);
             
         } catch (\Exception $e) {
-            // Si hay error al acceder a la BD (ej: migraciones), ignorar
-            logger('Settings not available: ' . $e->getMessage());
+            // Si hay error al acceder a la BD (ej: migraciones), usar valores por defecto
+            logger('Settings not available, using defaults: ' . $e->getMessage());
         }
     }
 }

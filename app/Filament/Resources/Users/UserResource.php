@@ -28,17 +28,20 @@ class UserResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'User';
 
-    protected static ?string $navigationLabel = 'Usuarios';
+    protected static ?string $navigationLabel = null;
 
-    protected static ?string $modelLabel = 'Usuario';
+    protected static ?string $modelLabel = null;
 
-    protected static ?string $pluralModelLabel = 'Usuarios';
+    protected static ?string $pluralModelLabel = null;
 
-    // Ordre als items de la barra de navegación
-    protected static ?int $navigationSort = 1;
+    // Groupe als items del la barra de navegació
+    protected static UnitEnum|string|null $navigationGroup = null;
 
-    // agrupar els items del la barra de navegació
-    protected static UnitEnum|string|null $navigationGroup = 'Gestión de Usuarios';
+    // Obtener grupo de navegación traducido
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.user_management');
+    }
 
     // Mostrar navegación si tiene permisos O si es usuario para ver su perfil
     public static function shouldRegisterNavigation(): bool
@@ -65,11 +68,21 @@ class UserResource extends Resource
         if ($user && ($user->hasRole('Usuario') || $user->hasRole('Escritor'))) {
             // Verificar si NO tiene permiso para ver todos los usuarios
             if (!$user->hasPermissionTo('ViewAny:User')) {
-                return 'Mi Perfil';
+                return __('filament.navigation.my_profile');
             }
         }
         
-        return 'Usuarios';
+        return __('filament.navigation.users');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament.pages.users.title');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.pages.users.title');
     }
 
     public static function form(Schema $schema): Schema

@@ -61,6 +61,34 @@ class AdminPanelProvider extends PanelProvider
             $panelConfig->registration()->emailVerification();
         }
 
+        // Configurar el nombre de la aplicación dinámicamente
+        try {
+            $appName = SettingsHelper::getAppName();
+            $panelConfig->brandName($appName);
+            
+            // Configurar el logo dinámicamente
+            $appLogo = SettingsHelper::getAppLogo();
+            if ($appLogo) {
+                $panelConfig->brandLogo($appLogo);
+            } else {
+                // Logo por defecto si no hay logo configurado
+                $panelConfig->brandLogo(asset('media/logo/logoFormalWeb_8.png'));
+            }
+            
+            // Configurar el favicon dinámicamente
+            $appFavicon = SettingsHelper::getAppFavicon();
+            if ($appFavicon) {
+                $panelConfig->favicon($appFavicon);
+            } else {
+                // Favicon por defecto
+                $panelConfig->favicon(asset('media/logo/logoformalweb.ico'));
+            }
+        } catch (\Exception $e) {
+            $panelConfig->brandName('Laravel Template');
+            $panelConfig->brandLogo(asset('media/logo/logoFormalWeb_8.png'));
+            $panelConfig->favicon(asset('media/logo/logoformalweb.ico'));
+        }
+
         return $panelConfig
             ->colors([
                 'primary' => [
@@ -91,9 +119,7 @@ class AdminPanelProvider extends PanelProvider
                 ],
             ])
             ->font('Roboto')
-            ->brandLogo(asset('media/logo/logoFormalWeb_8.png'))
             ->brandLogoHeight('3rem')
-            ->favicon(asset('media/logo/logoformalweb.ico'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->resources([
                 \BezhanSalleh\FilamentShield\Resources\Roles\RoleResource::class,
