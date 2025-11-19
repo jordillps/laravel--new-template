@@ -118,4 +118,16 @@ return [
             'detailed_logging' => 'Log detailed information',
         ],
     ],
+    
+    // Fieldset titles
+    'fieldsets' => [
+        'general_information' => 'General Information',
+        'contact_information' => 'Contact Information',
+        'admin_configuration' => 'Admin Panel Configuration',
+        'content_configuration' => 'Multilanguage Content Configuration',
+        'email_configuration' => 'Email Configuration',
+        'security_configuration' => 'Security Configuration',
+        'appearance_configuration' => 'Appearance Configuration',
+        'system_configuration' => 'System Configuration',
+    ],
 ];

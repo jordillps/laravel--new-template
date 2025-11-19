@@ -62,7 +62,7 @@ class CheckShieldSetup extends Command
         $this->info('');
         $this->info('🌐 Información de Acceso:');
         $this->line('URL del panel: http://127.0.0.1:8001/admin');
-        $this->line('Email super_admin: jordillps@gmail.com');
+        $this->line('Email super_admin: super_admin@example.com');
         $this->line('Password: Password123!');
         
         $this->info('');

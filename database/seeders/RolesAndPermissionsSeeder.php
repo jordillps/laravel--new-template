@@ -79,9 +79,9 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Crear usuarios de prueba
        $superAdmin = User::firstOrCreate([
-            'email' => 'jordillps@gmail.com',
+            'email' => 'super_admin@example.com',
         ], [
-            'name' => 'Jordi Llobet',
+            'name' => 'Super Administrador',
             'phone' => '666666666',
             'address' => 'Carrer de la Marina, 123',
             'city' => 'Barcelona',

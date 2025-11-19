@@ -75,8 +75,8 @@ class ResetApplication extends Command
         // Mostrar información de acceso
         $this->info('🌐 Información de acceso:');
         $this->line('Panel Admin: http://127.0.0.1:8001/admin');
-        $this->line('Super Admin: jordillps@gmail.com / Password123!');
-        $this->line('Usuario Escritor: user@example.com / Password123!');
+        $this->line('Super Admin: super_admin@example.com / Password123!');
+        $this->line('Usuario Normal: user@example.com / Password123!');
         $this->line('Viewer: viewer@example.com / Password123!');
         $this->line('Editor: editor@example.com / Password123!');
         $this->newLine();

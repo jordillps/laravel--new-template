@@ -118,4 +118,16 @@ return [
             'detailed_logging' => 'Registrar información detallada en logs',
         ],
     ],
+    
+    // Títulos de fieldsets
+    'fieldsets' => [
+        'general_information' => 'Información General',
+        'contact_information' => 'Información de Contacto',
+        'admin_configuration' => 'Configuración del Panel Administrativo',
+        'content_configuration' => 'Configuración de Contenido Multiidioma',
+        'email_configuration' => 'Configuración de Email',
+        'security_configuration' => 'Configuración de Seguridad',
+        'appearance_configuration' => 'Configuración de Apariencia',
+        'system_configuration' => 'Configuración del Sistema',
+    ],
 ];

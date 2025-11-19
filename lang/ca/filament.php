@@ -118,4 +118,16 @@ return [
             'detailed_logging' => 'Registrar informació detallada als logs',
         ],
     ],
+    
+    // Títols de fieldsets
+    'fieldsets' => [
+        'general_information' => 'Informació General',
+        'contact_information' => 'Informació de Contacte',
+        'admin_configuration' => 'Configuració del Panell Administratiu',
+        'content_configuration' => 'Configuració de Contingut Multiidioma',
+        'email_configuration' => 'Configuració d\'Email',
+        'security_configuration' => 'Configuració de Seguretat',
+        'appearance_configuration' => 'Configuració d\'Aparença',
+        'system_configuration' => 'Configuració del Sistema',
+    ],
 ];

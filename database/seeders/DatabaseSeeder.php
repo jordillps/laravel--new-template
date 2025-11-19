@@ -16,9 +16,9 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         // $superAdmin = User::firstOrCreate([
-        //     'email' => 'jordillps@gmail.com',
+        //     'email' => 'super_admin@example.com',
         // ], [
-        //     'name' => 'Jordi Llobet',
+        //     'name' => 'Super Administrador',
         //     'phone' => '666666666',
         //     'address' => 'Carrer de la Marina, 123',
         //     'city' => 'Barcelona',

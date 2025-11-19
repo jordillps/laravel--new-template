@@ -27,7 +27,8 @@ class ResetSuperAdminPassword extends Command
      */
     public function handle()
     {
-        $superAdmin = User::where('email', 'jordillps@gmail.com')->first();
+                // Buscar el usuario super_admin
+        $superAdmin = User::where('email', 'super_admin@example.com')->first();
         
         if (!$superAdmin) {
             $this->error('Super admin user not found!');
