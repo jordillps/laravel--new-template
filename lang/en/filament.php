@@ -66,23 +66,14 @@ return [
         'email_notifications_enabled' => 'Enable Email Notifications',
         
         // Security
-        'user_registration_enabled' => 'Allow User Registration',
-        'email_verification_required' => 'Email Verification Required',
-        
-        // Appearance
-        'default_theme' => 'Default Theme',
+        'user_registration_enabled' => 'Allow user registration',
+        'email_verification_required' => 'Email verification required',
         
         // System
         'maintenance_mode' => 'Maintenance Mode',
         'detailed_logging' => 'Detailed Logging',
         
         // Options
-        'theme_options' => [
-            'light' => 'Light',
-            'dark' => 'Dark',
-            'auto' => 'Automatic',
-        ],
-        
         'language_options' => [
             'es' => 'Español',
             'ca' => 'Català',
@@ -127,7 +118,6 @@ return [
         'content_configuration' => 'Multilanguage Content Configuration',
         'email_configuration' => 'Email Configuration',
         'security_configuration' => 'Security Configuration',
-        'appearance_configuration' => 'Appearance Configuration',
         'system_configuration' => 'System Configuration',
     ],
 ];

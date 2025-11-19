@@ -29,7 +29,6 @@ class SettingSeeder extends Seeder
             'email_notifications_enabled' => true,
             'user_registration_enabled' => true,
             'email_verification_required' => false,
-            'default_theme' => 'light',
             'custom_colors' => null,
             'maintenance_mode' => false,
             'detailed_logging' => false,

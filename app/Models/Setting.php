@@ -25,7 +25,6 @@ class Setting extends Model
         'email_notifications_enabled',
         'user_registration_enabled',
         'email_verification_required',
-        'default_theme',
         'custom_colors',
         'maintenance_mode',
         'detailed_logging',
@@ -116,7 +115,6 @@ class Setting extends Model
             'email_notifications_enabled' => true,
             'user_registration_enabled' => true,
             'email_verification_required' => false,
-            'default_theme' => 'light',
             'maintenance_mode' => false,
             'detailed_logging' => false,
         ]);

@@ -69,20 +69,11 @@ return [
         'user_registration_enabled' => 'Permitir registro de usuarios',
         'email_verification_required' => 'Verificación de email obligatoria',
         
-        // Apariencia
-        'default_theme' => 'Tema por defecto',
-        
         // Sistema
         'maintenance_mode' => 'Modo mantenimiento',
         'detailed_logging' => 'Logs detallados',
         
         // Opciones
-        'theme_options' => [
-            'light' => 'Claro',
-            'dark' => 'Oscuro',
-            'auto' => 'Automático',
-        ],
-        
         'language_options' => [
             'es' => 'Español',
             'ca' => 'Catalá',
@@ -127,7 +118,6 @@ return [
         'content_configuration' => 'Configuración de Contenido Multiidioma',
         'email_configuration' => 'Configuración de Email',
         'security_configuration' => 'Configuración de Seguridad',
-        'appearance_configuration' => 'Configuración de Apariencia',
         'system_configuration' => 'Configuración del Sistema',
     ],
 ];

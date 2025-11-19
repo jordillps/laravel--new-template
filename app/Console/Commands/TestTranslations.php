@@ -32,7 +32,6 @@ class TestTranslations extends Command
             'filament.settings.app_name' => __('filament.settings.app_name'),
             'filament.settings.admin_language' => __('filament.settings.admin_language'),
             'filament.settings.contact_email' => __('filament.settings.contact_email'),
-            'filament.settings.default_theme' => __('filament.settings.default_theme'),
             'filament.settings.maintenance_mode' => __('filament.settings.maintenance_mode'),
         ];
         

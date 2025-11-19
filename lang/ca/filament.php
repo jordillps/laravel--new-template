@@ -69,20 +69,11 @@ return [
         'user_registration_enabled' => 'Permetre registre d\'usuaris',
         'email_verification_required' => 'Verificació d\'email obligatòria',
         
-        // Aparença
-        'default_theme' => 'Tema per defecte',
-        
         // Sistema
         'maintenance_mode' => 'Mode manteniment',
         'detailed_logging' => 'Logs detallats',
         
         // Opcions
-        'theme_options' => [
-            'light' => 'Clar',
-            'dark' => 'Fosc',
-            'auto' => 'Automàtic',
-        ],
-        
         'language_options' => [
             'es' => 'Español',
             'ca' => 'Català',
@@ -127,7 +118,6 @@ return [
         'content_configuration' => 'Configuració de Contingut Multiidioma',
         'email_configuration' => 'Configuració d\'Email',
         'security_configuration' => 'Configuració de Seguretat',
-        'appearance_configuration' => 'Configuració d\'Aparença',
         'system_configuration' => 'Configuració del Sistema',
     ],
 ];

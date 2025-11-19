@@ -171,16 +171,6 @@ class SettingForm
                     ->helperText(__('filament.settings.helpers.email_verification_required'))
                     ->columnSpanFull(),
                 ])->columnSpanFull(),
-                
-                // === CONFIGURACIÓN DE APARIENCIA ===
-                Fieldset::make(__('filament.fieldsets.appearance_configuration'))
-                ->schema([
-                    Select::make('default_theme')
-                    ->label(__('filament.settings.default_theme'))
-                    ->options(__('filament.settings.theme_options'))
-                    ->default('light')
-                    ->required(),
-                ])->columnSpanFull(),
 
                 // === CONFIGURACIÓN DEL SISTEMA ===
                 Fieldset::make(__('filament.fieldsets.system_configuration'))
